@@ -1,11 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  This is my blog made with Zola.
-</h1>
 
-<p>Click <a href="{{ get_url(path='@/blog/_index.md') }}">here</a> to see my posts.</p>
+
+
+  {% set section = get_section(path="posts/_index.md") %}
+
+
+  <ul>
+    {% for page in section.pages %}
+      <div class="card">
+        <h1> 
+          # <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+        </h1> 
+      
+      <div class="date"> {{ page.date }} </div>
+    
+      {{ page.description }}
+      
+      <br/>
+      
+      <div class="read-more">
+        <a href="{{ page.permalink | safe }}">Read More ➫ </a>
+      </div>
+      
+      </div>
+    {% endfor %}
+  </ul>
+
 
 {% endblock content %}
 

@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+
+<div class="post">
+
 {% block content %}
 <h1 class="title">
   {{ page.title }}
@@ -7,5 +10,7 @@
   {{ page.description }}
 <p class="subtitle"><strong>{{ page.date }}</strong></p>
 {{ page.content | safe }}
+
+</div>
+
 {% endblock content %}
-  
