@@ -12,8 +12,11 @@ jobs:
     steps:
     - name: Checkout main
       uses: actions/checkout@v3.0.0
-    - name: Build and deploy
+    
+    - name: Set ownership
       run: chown -R $(id -u):$(id -g) $PWD
+    
+    - name: Build and deploy
       uses: shalzz/zola-deploy-action@v0.16.1
       env:
         PAGES_BRANCH: gh-pages
