@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
+
 {% block content %}
-
-
 
   {% set section = get_section(path="posts/_index.md") %}
 
-
-  <ul>
+  <ul class="post-list">
     {% for page in section.pages %}
-      <div class="card">
+      <div class="post-card">
         <h1> 
           # <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
         </h1> 

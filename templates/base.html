@@ -4,14 +4,32 @@
 <head>
   <meta charset="utf-8">
   <title>julio.lol</title>
-  <link id="stylesheet" rel="stylesheet" type="text/css" href="{{ get_url(path='style.css', trailing_slash=false) | safe }}">
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="{{ get_url(path='base.css', trailing_slash=false) | safe }}">
 </head>
     
 <body>
 
-  <h1 class="title">
-    <a href="{{ get_url( path="/") }}"> julio.lol  ⚠️ WIP </a>
-  </h1>
+  <div class="header">
+    <h1 class="title">
+      <a href="{{ get_url( path='/') }}"> julio.lol </a>
+    </h1>
+    <a class="link" 
+       href="{{ get_url(path='/about') }}">
+    about</a>
+    <a class="link" 
+       href="{{ get_url(path='/projects') }}">
+    projects</a>
+    <a class="link" 
+       href="{{ get_url(path='/posts') }}">
+    posts</a>
+    <a class="link" 
+       href="{{ get_url(path='/contact') }}">
+    contact</a>
+  </div>
+
   <section class="section">
     <div class="container">
       {% block content %} {% endblock %}
