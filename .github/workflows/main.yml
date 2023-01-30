@@ -13,9 +13,15 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@v3.0.0
     
-    - name: Set safe dirs
-      run: git config --global --add safe.directory "*"
+    - name: Set ownership
+      run: chown -R $(id -u):$(id -g) $PWD
     
+    - name: Set safe dirs
+      run: git config --global --add safe.directory /github/workspace
+      
+    - name: hello
+      run: echo "hi this sucks :/"; ls -al
+      
     - name: Build and deploy
       uses: shalzz/zola-deploy-action@v0.16.0
       env:
