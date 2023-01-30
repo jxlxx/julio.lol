@@ -18,10 +18,10 @@ jobs:
       shell: bash {0}
 
     - name: Build and deploy
-      uses: shalzz/zola-deploy-action@v0.16.1
+      uses: jxlxx/zola-deploy-action
       env:
         PAGES_BRANCH: gh-pages
-        BUILD_THEMES: "false"
+        BUILD_THEMES: false
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
     - name: huh2
