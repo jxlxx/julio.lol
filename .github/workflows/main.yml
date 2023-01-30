@@ -13,6 +13,7 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@v3.0.0
     - name: Build and deploy
+      run: chown -R $(id -u):$(id -g) $PWD
       uses: shalzz/zola-deploy-action@v0.16.1
       env:
         PAGES_BRANCH: gh-pages
