@@ -23,7 +23,7 @@ jobs:
       run: echo "hi this sucks :/"; ls -al
       
     - name: Build and deploy
-      uses: shalzz/zola-deploy-action@v0.16.0
+      uses: shalzz/zola-deploy-action@v0.16.1
       env:
         PAGES_BRANCH: gh-pages
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
