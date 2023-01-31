@@ -1,23 +1,50 @@
 :root {
-  --sans-font: -apple-system, "Jet Brains Mono", BlinkMacSystemFont, "Avenir Next", Avenir,
-  "Nimbus Sans L", Roboto, "Noto Sans", "Segoe UI", Arial, Helvetica,
-  "Helvetica Neue", sans-serif;
-  --mono-font: 'IBM Plex Mono', Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  --mono-font: "IBM Plex Mono", monospace;
   
-  /* Default (light) theme */
-  --bg: #fff;
-  --accent-bg: #f5f7ff;
+  /* Light (default) theme */
+  --bg: #ffffff;
   --text: #212121;
-  --text-light: #A8A8A8;
+  --text-secondary: #A8A8A8;
   --border: #898EA4;
   --accent: #FFA500;
-  --code: #d81b60;
-  --preformatted: #444;
-  --marked: #ffdd33;
-  --disabled: #efefef;
+  
+  /* Dark theme */
+  --bg-dark: #202427;
+  --text-dark: #fff;
+  --text-light-dark: #A8A8A8;
+  --border-dark: #898EA4;
+  --accent-dark:#FFA500;
 }
 
-html {
+body.light {
+  background: var(--bg);
+  color: var(--text);
+  a {
+    color: var(--text);
+  }
+  #dark-mode {
+    display: none;
+  }
+  #light-mode {
+    display: inline;
+  }
+}
+
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  a {
+    color: var(--text-dark);
+  }
+  #dark-mode {
+    display: inline;
+  }
+  #light-mode {
+    display: none;
+  }
+}
+
+body {
   font-size: 15px;
   font-family: var(--mono-font);
   letter-spacing: -0.5px;
@@ -28,7 +55,6 @@ html {
   }
                                
   a {
-    color: var(--text);
     text-decoration: none;
     border-bottom: 2px solid var(--accent);
     cursor: pointer;
@@ -46,21 +72,36 @@ html {
     width: 80%;
     margin: auto;
     .title {
+      font-weight: 400;
       font-size: 3rem;
+      .theme-toggle {
+        cursor: pointer;
+        float: right;
+        font-size: 1.5rem;
+      }
+      .hash {
+        color: var(--accent);
+        letter-spacing: -10px;
+      }
     }
     .link {
-      font-size: 1.5rem;
+      font-size: 1rem;
+      letter-spacing: -1px;
     }
   }
    
   
   .post-card {
     padding-top: 2rem;
+    h1 {
+      font-weight: 400;
+    }
     .hash {
       color: var(--accent);
+      letter-spacing: -5px;
     }
     .date {
-      color: var(--text-light);
+      color: var(--text-secondary);
     }
   }            
   
@@ -74,8 +115,16 @@ html {
     }
     .header {
       width: 100%;
+      .title {
+        font-weight: 500;
+        .theme-toggle {
+          font-size: 3rem;
+        }
+      }
       .link {
-        font-size: 3rem;
+        font-weight: 300;
+        font-size: 2.5rem;
+        padding-right: 5px;
       }
     }
     section.section {
