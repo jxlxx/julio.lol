@@ -56,6 +56,9 @@ html {
   
   .post-card {
     padding-top: 2rem;
+    .hash {
+      color: var(--accent);
+    }
     .date {
       color: var(--text-light);
     }
