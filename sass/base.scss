@@ -18,7 +18,7 @@
 }
 
 html {
-  font-size: 14px;
+  font-size: 15px;
   font-family: var(--mono-font);
   font-weight: 200;  
   
@@ -43,7 +43,8 @@ html {
   }
 
   .header {
-    // margin-left:
+    width: 80%;
+    margin: auto;
     .title {
       font-size: 3rem;
     }
@@ -69,6 +70,12 @@ html {
       width: 90%;
       margin: auto;
     }
+    .header {
+      width: 100%;
+      .link {
+        font-size: 3rem;
+      }
+    }
     section.section {
       width: 100%;
     }
@@ -86,7 +93,6 @@ html {
       }
     }
     
-    
     .post {
       * {
         font-size: 5rem;
@@ -95,7 +101,8 @@ html {
   }
 
   .go-back {
-    margin-top: 2rem;    
+    margin-top: 3rem;
+    margin-bottom: 3rem;
     .left-arrow {
     }
   }

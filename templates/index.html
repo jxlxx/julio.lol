@@ -5,7 +5,6 @@
 
   {% set section = get_section(path="posts/_index.md") %}
 
-  <ul class="post-list">
     {% for page in section.pages %}
       <div class="post-card">
         <h1> 
@@ -24,7 +23,6 @@
       
       </div>
     {% endfor %}
-  </ul>
 
 
 {% endblock content %}
