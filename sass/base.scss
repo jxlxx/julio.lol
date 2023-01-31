@@ -2,7 +2,7 @@
   --sans-font: -apple-system, "Jet Brains Mono", BlinkMacSystemFont, "Avenir Next", Avenir,
   "Nimbus Sans L", Roboto, "Noto Sans", "Segoe UI", Arial, Helvetica,
   "Helvetica Neue", sans-serif;
-  --mono-font: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  --mono-font: 'IBM Plex Mono', Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   
   /* Default (light) theme */
   --bg: #fff;
@@ -20,8 +20,8 @@
 html {
   font-size: 15px;
   font-family: var(--mono-font);
-  font-weight: 200;  
-  
+  letter-spacing: -0.5px;
+    
   .container {
     width:80%;
     margin: auto;
@@ -65,7 +65,6 @@ html {
   }            
   
   @media only screen and (max-device-width: 800px) {
-    font-weight: 100;
     padding: 0.75rem;
     margin: none;
     
