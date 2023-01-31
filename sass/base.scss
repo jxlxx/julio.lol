@@ -128,21 +128,13 @@ body {
       }
     }
     section.section {
-      width: 100%;
+      width: 95%;
+      margin: auto;
     }
     .container {
       width: 100%;
     }
     
-    pre code {
-      // word-wrap: break-word;
-    }
-    pre {  
-      code {
-        // display: grid;
-        // font-size: 2rem;
-      }
-    }
     
     .post {
       * {

@@ -61,7 +61,7 @@ I went with typescript because it has types, everyone can understand it, and it 
 
 Globally install `aws-cdk` and `typescript` with `npm`. You also need the `aws-cli`.
 
-```jsx
+```tsx
 cdk init app --language typescript
 ```
 
@@ -101,7 +101,7 @@ Inside the stacks there are “constructs”
 
 `bin/name.ts`
 
-```jsx
+```tsx
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import { CdkWorkshopStack } from '../lib/cdk-workshop-stack';
@@ -116,7 +116,7 @@ Who cares. Moving on.
 
 Now let’s look at `lib/name-stack.ts`
 
-```jsx
+```tsx
 import * as cdk from 'aws-cdk-lib';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
@@ -172,7 +172,7 @@ cdk deploy
 
 Now lets add some changes:
 
-```jsx
+```tsx
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { aws_s3 as s3 } from 'aws-cdk-lib'
@@ -265,7 +265,7 @@ Adding an AWS lambda function
     
 3. add the following js file, `lambda/hello.js`
 
-```jsx
+```tsx
 exports.handler = async function(event) {
   console.log("request:", JSON.stringify(event, undefined, 2));
   return {
@@ -282,7 +282,7 @@ To define an AWS Lambda function you need to use the **AWS Construct Library.**
 
 The construct library is divided into modules.
 
-```jsx
+```tsx
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
@@ -320,7 +320,7 @@ What we can also do is expose a rest api call that call the lambda function.
 
 The most sensible way to do that would be to use API Gateway, an AWS service to expose public HTTP endpoints.
 
-```jsx
+```tsx
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';

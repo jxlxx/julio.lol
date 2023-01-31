@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>julio.lol</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.github.io/julio.lol/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.github.io/julio.lol"> julio.lol </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+
+<div class="go-back">
+
+ <a href="https://jxlxx.github.io/julio.lol"> <span class="left-arrow">⇦</span>  go back</a>
+
+
+</div>
+
+<h1 class="title">
+  Running the Confluent Python Client for Kafka on Apple Silicon&#x2F;M1
+</h1>
+  How to install confluent-kafka on an M1.
+<p class="subtitle"><strong>2022-04-14</strong></p>
+<h1 id="librdkafka"><code>Librdkafka</code></h1>
+<p><code>confluent-kafka</code> requires <code>librdkafka</code>. <code>brew install librdkafka</code> didn't work for me, so I needed to clone the repo and build it. This looks a little convoluted but I simply don't feel like investigating and making it cleaner.</p>
+<p>Clone the repo and and install the <code>librdkafka</code> dependencies:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">git</span><span> clone https://github.com/edenhill/librdkafka.git
+</span><span style="color:#96b5b4;">cd</span><span> librdkafka
+</span><span style="color:#bf616a;">./configure --install-deps
+</span></code></pre>
+<p>Then you need install some more dependecies and do some special things for <code>openssl</code>:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">brew</span><span> install openssl zstd pkg-config
+</span><span style="color:#bf616a;">brew</span><span> link openssl</span><span style="color:#bf616a;"> --force
+</span><span style="color:#b48ead;">export </span><span style="color:#bf616a;">PATH</span><span>=&quot;</span><span style="color:#a3be8c;">/opt/homebrew/opt/openssl@3/bin:</span><span>$</span><span style="color:#bf616a;">PATH</span><span>&quot; 
+</span></code></pre>
+<p>💡 <strong>Note:</strong> I used the <code>/opt/homebrew/opt</code> path but maybe <code>/opt/homebrew/Cellar</code> makes more sense? But either way it works</p>
+<p>And then a bit more configuration:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">./configure
+</span><span style="color:#bf616a;">make
+</span><span style="color:#bf616a;">sudo</span><span> make install
+</span></code></pre>
+<h1 id="confluent-kafka"><code>confluent-kafka</code></h1>
+<p>Now you can install with python, but you need to specify the location of the <code>librdkafka</code> libs like so:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">python -m</span><span> pip install</span><span style="color:#bf616a;"> --global-option</span><span>=build_ext</span><span style="color:#bf616a;"> --global-option</span><span>=&quot;</span><span style="color:#a3be8c;">-I/usr/local/include</span><span>&quot; \
+</span><span style="color:#bf616a;">                      --global-option</span><span>=&quot;</span><span style="color:#a3be8c;">-L/usr/local/lib</span><span>&quot; confluent-kafka
+</span><span>
+</span></code></pre>
+<p>References:
+https://github.com/confluentinc/confluent-kafka-python/issues/1190</p>
+
+
+</div>
+
+
+    </div>
+  </section>
+</body>
+</html>
+

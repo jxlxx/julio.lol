@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>julio.lol</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.github.io/julio.lol/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.github.io/julio.lol"> julio.lol </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.github.io/julio.lol/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+
+<div class="go-back">
+
+ <a href="https://jxlxx.github.io/julio.lol"> <span class="left-arrow">⇦</span>  go back</a>
+
+
+</div>
+
+<h1 class="title">
+  AWS Technical Essentials Course Notes
+</h1>
+  Some notes I took on a beginners course in AWS.
+<p class="subtitle"><strong>2022-05-23</strong></p>
+<p><a href="https://explore.skillbuilder.aws/learn/course/external/view/elearning/1851/aws-technical-essentials?dt=tile&amp;tile=fdt">Link to the course (it's free btw)</a></p>
+<h1 id="module-1-introduction-to-amazon-web-services"><strong>Module 1: Introduction to Amazon Web Services</strong></h1>
+<h3 id="overview-of-aws-infrastructure">Overview of AWS infrastructure</h3>
+<ul>
+<li>AWS resources are in Availability Zones</li>
+<li>Availability Zones are in Regions</li>
+<li><code>us-east-2</code> is a region</li>
+<li><code>us-east-2a</code> is an availability zone</li>
+<li>Services are deployed at either a Global, Region, or AZ level</li>
+<li>Some service require you choose an AZ</li>
+</ul>
+<h3 id="iam">IAM</h3>
+<ul>
+<li>When you create an account with email and password that’s called a <strong>root user</strong></li>
+<li>Email/password combo is one set of credentials but you get another set of credentials called <strong>access keys</strong>, they allow you to use CLI or AWS SDKs</li>
+<li>Access keys have two parts: <strong>access key ID</strong> and <strong>secret access key</strong></li>
+<li>IAM is global and not specific to regions</li>
+</ul>
+<h3 id="demo">Demo</h3>
+<ul>
+<li>Every AWS resource must live inside of a network</li>
+<li>AWS provides a default VPC, virtual private network</li>
+</ul>
+<h1 id="module-2-aws-compute"><strong>Module 2: AWS Compute</strong></h1>
+<p>AMI: Amazon Machine Image</p>
+<p>When selecting an instance type and size, you see: <code>t3.medium</code> or <code>a1.large</code></p>
+<ul>
+<li><code>t3</code> and <code>a1</code> is the instance family/type + generation, determines the hardware capabilities</li>
+<li><code>medium</code> and <code>large</code> is the instance size (vCPUS, memory, etc)</li>
+<li>you only get charged while in the running state, of in the stopping (preparing to hibernate)</li>
+</ul>
+<p><a href="https://webapp.serverlessworkshops.io/">Wild Rydes Web Application</a></p>
+<p><a href="https://d1.awsstatic.com/whitepapers/architecture/AWS-Serverless-Applications-Lens.pdf">AWS Serverless Whitepaper</a></p>
+<h1 id="module-3-aws-networking"><strong>Module 3: AWS Networking</strong></h1>
+<ul>
+<li>In AWS, the smallest IP range you can have is /28, which provides 16 IP addresses. The largest IP range you can have is a /16, which provides 65,536 IP addresses.</li>
+</ul>
+<p>To create a VPC, we need to set 2 things:</p>
+<ul>
+<li>region</li>
+<li>IP range</li>
+</ul>
+<p>VPC are split into subnets, and then you put your AWS resources into these subnets.</p>
+<p>To provide more control over access of resources.</p>
+<p>To create a Subnet, we need 3 things:</p>
+<ul>
+<li>the VPC it will live in</li>
+<li>the AZ it will live in</li>
+<li>IP range (subset of the VPC)</li>
+</ul>
+<p>VPCs need Internet Gateways (IGW) to connect to the internet.</p>
+<p>If you only want traffic from a specific place, for example an on-premises datacenter, then you can create Virtual Private Gateway (VGW).</p>
+<p><strong>AWS reserves 5 IP addresses in each subnet.</strong> </p>
+<ul>
+<li>10.0.0.0: Network address.
+= 10.0.0.1: Reserved for the VPC router.</li>
+<li>10.0.0.2: The IP address of the DNS server is the base of the VPC network range plus two. </li>
+<li>10.0.0.3: Reserved for future use. (?)</li>
+<li>10.0.0.255: Network broadcast address. AWS does not support broadcast in a VPC, so they reserve this address.</li>
+</ul>
+<p><strong>How does traffic get routed through the VPC?</strong></p>
+<p>When you create a VPC, AWS creates a route table called the <strong>main route table</strong>.</p>
+<p>A route table contains a set of rules, called routes, that are used to determine where traffic is directed.</p>
+<p>Default configuration allows traffic between all the subnets in the local network.</p>
+<p><strong>Network Access Control List (Network ACL)</strong> can be thought of as a firewall at the subnet level. </p>
+<p>You can use it to only allow HTTPS traffic in and out of your subnet. Remember if you make a rule to only allow HTTPS traffic in, you have to also make a rule to allow HTTPS traffic out.</p>
+<p>A <strong>NAT Gateway</strong> provides internet connectivity to instances and private subnets. A NAT gateway is a <strong>Network Address Translation</strong> service. You can use a NAT gateway to so that instances in a private subnet can connect to services outside your subnet.</p>
+<p>The next layer of security is a <strong>Security Group</strong>. This is a firewall at the EC2 level. Security groups are not optional. The default configuration of a new security group blocks all inbound traffic and allows all outbound traffic. This ok and works because security groups will remember if a connection if originally initiated by the EC2 instance or outside and will temporarily allow traffic to respond with modifying the inbound rules.</p>
+<h1 id="module-4-aws-storage"><strong>Module 4: AWS Storage</strong></h1>
+<p>AWS storage services are grouped into 3 categories: <strong>block storage, file storage, and object storage.</strong></p>
+<p><strong>File storage</strong>: It's what it sounds like, it’s a file system. Each file has metadata like file name, file size, created date, etc. And files have paths. File storage is good when 
+you require centralized access to file that need to be easily shared and managed by multiple host computers.</p>
+<p><strong>Block storage</strong>: splits of data into block, considers each block it’s own thing</p>
+<ul>
+<li>good for things that gets updated a lot because you will only need to update individual blocks not the whole thing</li>
+</ul>
+<p><strong>Object storage</strong>: considers each object its own thing.
+- WORM: write once, read many</p>
+<p><strong>EBS, elastic block storage</strong>  , is like an external drive. Persistent storage.</p>
+<ul>
+<li>EC2 instance storage in the machines drives, but are not saved when the instance is terminated.</li>
+<li>Snapshots are saved from EBS as backups.</li>
+<li>Unlike EBS, which requires a EC2 instance to be used, Amazon S3 is a standalone storage solution.</li>
+</ul>
+<p><strong>S3</strong> is object storage. </p>
+<ul>
+<li>S3 objects are stored in a flat structure using unique identifiers for look up.</li>
+<li>In S3, you store objects in buckets. This is mandatory.</li>
+<li>At minimum, you need to specify 2 details: the region and the bucket name.</li>
+<li>Bucket names must be unique across all AWS accounts (like in the world).</li>
+<li>Everything in Amazon S3 is private by default (can. only be viewed by the AWS account that created that resource).</li>
+<li>Two ways to change/have more control over this: IAM policies &amp; S3 bucket policies
+<ul>
+<li>You can specify in IAM policies what users are allowed to do to buckets</li>
+<li>Or, you can specify on the bucket side what’s allowed to happen to that bucket</li>
+</ul>
+</li>
+<li>Amazon S3 reinforces encryption in transit (as it travels to and from Amazon S3) and at rest</li>
+<li>You can use S3 versioning. Default behaviour is that objects get overwritten when they get sent to S3.</li>
+<li>There are 6 different S3 storage classes that are optimized for different things.</li>
+</ul>
+<p>You can automate automatic tier transitions with <strong>object life cycle</strong> management. You can choose:</p>
+<ul>
+<li>Transition actions: when objects should transition to another storage class</li>
+<li>Expiration actions: when objects expire and should be permanently deleted</li>
+</ul>
+<h1 id="module-5-databases"><strong>Module 5: Databases</strong></h1>
+<p>nothing of note</p>
+<h1 id="module-6-monitoring-optimization-and-serverless"><strong>Module 6: Monitoring, Optimization, and Serverless</strong></h1>
+<ul>
+<li>load balancing: distributing tasks across a set of resources</li>
+<li>you can run a load balancer on an EC2 instance or use ELB</li>
+<li>ELB makes health checks to services to determine whether it should send traffic their way</li>
+<li>ELB is actually really scalable even if it looks like it isn’t</li>
+</ul>
+<p>Application Load Balancer — Layer 7: HTTP/HTTPS</p>
+<p>Network Load Balancer — Layer 4: TCP/UDP/TLS</p>
+<p>Gateway Load Balancer — Layer 3+4: IP</p>
+<ul>
+<li>The ALB is made up of 3 components: rules, listeners, and target groups
+<ul>
+<li>target group: the backend servers are defined in one or more target groups. This where traffic is directed. You must define a health check for each target group.</li>
+<li>listener: the client connects to the listener. To  define a listener you must provide a port and a protocol. There can be many listener for a single LB. Ex. listen to port 80 for http traffic.</li>
+<li>rule: conditions that map clients to target groups</li>
+</ul>
+</li>
+</ul>
+<p>You can have internal or external load balancers. For use within your network or internet facing.</p>
+<p>ALB makes routing decisions based on the HTTP protocol, like the URL path (/upload) and host, HTTP headers and method, and the source IP address of the client.</p>
+<p><strong>ALB uses sticky sessions.</strong> If requests must be sent to the same backend server because the application is stateful, use the sticky session feature. This feature uses an HTTP cookie to remember across connections which server to send the traffic to.</p>
+<p>NLBs do not understand what an HTTP request is.</p>
+<p>NLBs use a flow hash routing algorithm. The algorithm is based on:</p>
+<ul>
+<li>protocol</li>
+<li>source ip and port</li>
+<li>destination ip and port</li>
+<li>TCP sequence number</li>
+</ul>
+<p>If all those params are the same, it goes to the same target</p>
+
+
+</div>
+
+
+    </div>
+  </section>
+</body>
+</html>
+
