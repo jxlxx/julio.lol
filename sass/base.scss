@@ -7,13 +7,13 @@
   --text-secondary: #A8A8A8;
   --border: #898EA4;
   --accent: #FFA500;
+  --accent-dark:#d07d00;
   
   /* Dark theme */
   --bg-dark: #202427;
   --text-dark: #fff;
   --text-light-dark: #A8A8A8;
   --border-dark: #898EA4;
-  --accent-dark:#FFA500;
 }
 
 body.light {
@@ -33,6 +33,20 @@ body.light {
   #light-mode {
     display: inline;
   }
+  
+  p, li {
+    code {
+      background: #eee;
+      color: var(--accent-dark);
+      font-weight: 400;
+    }
+  }
+  blockquote {
+    background-color: #eee;
+    p {
+      color: black;
+    }
+  }
 }
 
 body.dark {
@@ -49,6 +63,18 @@ body.dark {
   }
   #light-mode {
     display: none;
+  }
+  p, li {
+    code {
+      background: #222;
+      color: var(--accent);    
+      }
+  }
+  blockquote {
+    background-color: #222; 
+    p {
+      color: white;    
+    }
   }
 }
 
