@@ -36,7 +36,7 @@ We will briefly talk about:
 - [contexts](https://julio.lol/posts/go-essentials/#contexts)
 - [interfaces](https://julio.lol/posts/go-essentials/#interfaces)
 - [project structure](https://julio.lol/posts/go-essentials/#project-structure)
-- [gofmt (and `go.dev/play`)](https://julio.lol/posts/go-essentials/#variables-and-imports)
+- [gofmt (and `go.dev/play`)](https://julio.lol/posts/go-essentials/#other)
 
 # Variables and imports
 
