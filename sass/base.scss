@@ -41,7 +41,7 @@ body.light {
       font-weight: 400;
     }
   }
-  blockquote {
+  blockquote, .description {
     background-color: #eee;
     p {
       color: black;
@@ -52,6 +52,7 @@ body.light {
 body.dark {
   background: var(--bg-dark);
   color: var(--text-dark);
+  
   a {
     color: var(--text-dark);
   }
@@ -70,7 +71,7 @@ body.dark {
       color: var(--accent);    
       }
   }
-  blockquote {
+  blockquote, .description {
     background-color: #222; 
     p {
       color: white;    
@@ -95,6 +96,10 @@ body {
     text-decoration: none;
     border-bottom: 2px solid var(--accent);
     cursor: pointer;
+  }
+  
+  a.github-link {
+    display: inline;
   }
   
   pre  {
@@ -144,6 +149,9 @@ body {
     .date {
       color: var(--text-secondary);
     }
+    h1 {
+      margin: 0;
+    }
   }            
   
   .go-back {
@@ -156,13 +164,39 @@ body {
   
   footer {
     height: 10rem;
-    margin-top: 5rem;
+    margin-top: 10rem;
     margin-bottom: 1em;
     a { 
       display: block;
     }
   }
 
+    section {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        
+        font-size: 1.5rem;
+      }
+      
+      a {
+        font-size: 1rem;
+      }
+      
+      pre {
+        overflow-x: scroll;
+      }
+      
+      code {
+        font-size: 1rem;
+      }
+    
+      p {
+        font-size: 1rem;
+      }
+    }
   @media only screen and (max-device-width: 800px) {
     padding: 0.75rem;
     margin: none;
@@ -172,30 +206,55 @@ body {
       margin: auto;
     }
     .header {
-      width: 100%;
+      width: 95%;
       .title {
-        font-weight: 500;
+        a {
+          font-size: 5rem;
+          font-weight: 500;
+        }
         .theme-toggle {
           font-size: 3rem;
         }
       }
       .link {
         font-weight: 300;
-        font-size: 2.5rem;
+        font-size: 3rem;
         padding-right: 5px;
       }
     }
     section.section {
       width: 95%;
+    
       margin: auto;
     }
     .container {
       width: 100%;
     }
     
-    .post {
-      * {
-        font-size: 5rem;
+    section {
+      h1 {
+        font-size: 4rem;
+      }
+      
+      h2 {
+        
+        font-size: 3rem;
+      }
+      
+      a {
+        font-size: 2rem;
+      }
+      
+      pre {
+        overflow-x: scroll;
+      }
+      
+      code {
+        font-size: 2rem;
+      }
+    
+      p {
+        font-size: 1.75rem;
       }
     }
     footer {
