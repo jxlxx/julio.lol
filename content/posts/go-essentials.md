@@ -64,7 +64,7 @@ There are 4 details that leap out at us immediately and lead to some natural que
 1. We are looking at a **package** called `main` *(what is a package?)*
 2. We are **importing** something called `fmt` *(what is `fmt`?)*
 3. We are **defining** a function called `main` *(is there something special about the name `main`?)*
-4. We **calling** a function from `fmt` called `Println` *(why is is capitalized?)*
+4. We are **calling** a function from `fmt` called `Println` *(why is is capitalized?)*
 
 Let's start with answering those 4 burning questions, and then we will get into concurrency and other fancy stuff.
 
