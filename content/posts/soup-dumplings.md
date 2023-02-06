@@ -1,5 +1,5 @@
 ---
-title: (Vegetarian) Soup Dumplings 
+title: (Vegetarian) Soup Dumplings 🥟
 date: "2023-02-06"
 description: "A simple recipe for vegetarian soup dumplings."
 draft: false
