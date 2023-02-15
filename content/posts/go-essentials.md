@@ -39,7 +39,7 @@ We will briefly talk about:
 7. [contexts](https://julio.lol/posts/go-essentials/#contexts)
 8. [interfaces](https://julio.lol/posts/go-essentials/#interfaces)
 9. [project structure](https://julio.lol/posts/go-essentials/#project-structure)
-10. [gofmt (and `go.dev/play`)](https://julio.lol/posts/go-essentials/#variables-and-imports)
+10. [gofmt (and `go.dev/play`)](https://julio.lol/posts/go-essentials/#other)
 
 
 # Hello, 世界!
