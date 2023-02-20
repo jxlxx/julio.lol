@@ -10,9 +10,9 @@
 
 **💞️ I love:**  
 
-|   |   |   |   |   |
-|---|---|---|---|---|
-| ![Elm](https://img.shields.io/badge/Elm-60B5CC?style=for-the-badge&logo=elm&logoColor=white) | ![Nix](https://img.shields.io/badge/NIX-5277C3.svg?style=for-the-badge&logo=NixOS&logoColor=white) | ![NixOS](https://img.shields.io/badge/NIXOS-5277C3.svg?style=for-the-badge&logo=NixOS&logoColor=white) | ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) |[helix](https://helix-editor.com/)|
+|   |   |   |   |   |   |
+|---|---|---|---|---|---|
+| ![Elm](https://img.shields.io/badge/Elm-60B5CC?style=for-the-badge&logo=elm&logoColor=white) | ![Nix](https://img.shields.io/badge/NIX-5277C3.svg?style=for-the-badge&logo=NixOS&logoColor=white) | ![NixOS](https://img.shields.io/badge/NIXOS-5277C3.svg?style=for-the-badge&logo=NixOS&logoColor=white) | ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) |[helix](https://helix-editor.com/)| [sudoku](https://www.google.com/search?q=sudoku&sxsrf=AJOqlzX__ceIahXe_XxOmMF0D4_nL7ZP7g:1676910033142&source=lnms&tbm=isch&sa=X&ved=2ahUKEwi5yuHWwKT9AhXSlIkEHUYNC28Q_AUoAXoECAEQAw&biw=2538&bih=1312&dpr=1.5) |
  
  
 **🌱 I'm learning:**
