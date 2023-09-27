@@ -6,7 +6,7 @@
 - [simple-nix-starters](https://github.com/jxlxx/simple-nix-starters) Bare bones examples of setting up Nix development environments (PRs welcome).
 - [elm-google-oauth2](https://github.com/jxlxx/elm-google-oauth2) A simple example of how to add a Google sign-in button in an Elm Project.
 - [netwerking.club](https://jxlxx.github.io/netwerking.club/) My (incomplete) notes on the textbook Computer Networking by Peterson & Davie.
-- My blog of notes on software, tutorials, and recipes at: 👽 [julio.lol](https://julio.lol/).
+- My blog of notes on software, tutorials, and recipes at: 👽 [jxlxx.org](https://jxlxx.org/).
 
 **💞️ I love:**  
 
