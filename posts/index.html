@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>jxlxx.org</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.org/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.org"> jxlxx.org  </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+<h1 class="title">
+  posts
+  </h1>
+  <ul>
+    <!-- If you are using pagination, section.pages will be empty. You need to use the paginator object -->  
+    
+    <a href="https://jxlxx.org/posts/soup-dumplings/">(Vegetarian) Soup Dumplings 🥟</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/go-essentials/">Go Essentials</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/06-aws-cdk-basics/">AWS CDK Basics</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/04-networking-basics/">Networking Basics</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/03-radius-basics/">RADIUS Servers and AAA Basics</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/05-aws-basics/">AWS Technical Essentials Course Notes</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/08-how-to-alcohol/">How to Make Alcohol in a Jar 🍻</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/02-getting-kafka-on-an-m1/">Running the Confluent Python Client for Kafka on Apple Silicon&#x2F;M1</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/02a-getting-grpcio-on-an-m1/">Installing grpcio on an Apple Silicon&#x2F;M1</a>
+    <br/>
+    
+    <a href="https://jxlxx.org/posts/01-golang-and-kafka-and-protobufs/">How to use Protobuf with Golang &amp; Kafka</a>
+    <br/>
+    
+  </ul>
+
+    </div>
+  </section>
+  
+
+  <footer>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+   
+    <br/> 
+    copyright 2022-2023 <a class="github-link" href="https://github.com/jxlxx">jxlxx</a> 
+ </footer>
+  
+</body>
+</html>
+

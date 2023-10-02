@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>jxlxx.org</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.org/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.org"> jxlxx.org  </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+
+<div class="go-back">
+
+ <a href="https://jxlxx.org"> <span class="emoji">⇦</span>  go back</a>
+
+
+</div>
+
+<h1 class="title">
+  AWS CDK Basics
+</h1>
+<p class="description">
+  Talking notes for an AWS CDK workshop.
+<p>
+<p class="subtitle"><strong>2022-07-20</strong></p>
+<h1 id="what-is-cdk">What is CDK?</h1>
+<p>Cloud Development Kit.</p>
+<p>Imagine… You are running some kind of software business.</p>
+<p>You’re most likely not self-hosting, and instead using some kind of cloud provider.</p>
+<p>Something like: AWS, GCP, Digital Ocean, Linode… etc.</p>
+<p>What are the kinds of services you need? </p>
+<table><thead><tr><th>Domain Name</th><th>Route53</th></tr></thead><tbody>
+<tr><td>SSL</td><td>Certificate Manager</td></tr>
+<tr><td>CDN</td><td>CloudFront</td></tr>
+<tr><td>Static Assets, etc</td><td>S3</td></tr>
+<tr><td>Database</td><td>RDS, Dynamo, Aurora, etc</td></tr>
+<tr><td>Authentication</td><td>Cognito</td></tr>
+<tr><td>REST API</td><td>API Gateway</td></tr>
+<tr><td>Business Logic Stuff</td><td>Lambda, EC2</td></tr>
+<tr><td>Container management</td><td>ECR</td></tr>
+</tbody></table>
+<p>You also probably want a Dev, Stag, and Prod stack.</p>
+<p>So a CDK is code that you write, which generates CloudFormation Templates (JSON or YAML), which you push to AWS CloudFormation, and then that builds your AWS infrastructure.</p>
+<p>And CloudFormation Templates are ANNOYING. </p>
+<h1 id="how-to-start-a-cdk-project">How to start a CDK project</h1>
+<p>Get the code: <code>git checkout v1</code></p>
+<p>Every CDK app should be in its own directory.</p>
+<p>For this tutorial, all my code is in <code>/BackendGuild</code>. So I did:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">mkdir</span><span> CDKWorkshop
+</span></code></pre>
+<p>CDK apps can be written in a bunch of languages:</p>
+<ul>
+<li>typescript</li>
+<li>javascript</li>
+<li>python</li>
+<li>java</li>
+<li>C#</li>
+<li>Go</li>
+</ul>
+<p>I went with typescript because it has types, everyone can understand it, and it has the most examples and documentation out of all the languages listed by a huuuuge margin. </p>
+<p>Globally install <code>aws-cdk</code> and <code>typescript</code> with <code>npm</code>. You also need the <code>aws-cli</code>.</p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#e9fdac;">cdk init app </span><span style="color:#ff5e5e;">--</span><span style="color:#e9fdac;">language typescript
+</span></code></pre>
+<h1 id="project-structure">Project Structure</h1>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">lib/name-stack.ts </span><span style="color:#6d6d6d;"># where you spend most of your time
+</span><span>                  </span><span style="color:#6d6d6d;"># where the CDK main stack is defined
+</span><span>
+</span><span style="color:#e9fdac;">bin/name.ts </span><span style="color:#6d6d6d;"># enypoint of the CDK app
+</span><span>            </span><span style="color:#6d6d6d;"># loads the stack defined in ^^
+</span><span>            </span><span style="color:#6d6d6d;"># call stuff in lib and instantiate it
+</span><span>
+</span><span style="color:#e9fdac;">package.json  </span><span style="color:#6d6d6d;"># npm module manifest, build/run scripts etc
+</span><span>
+</span><span style="color:#e9fdac;">cdk.json      </span><span style="color:#6d6d6d;"># &quot;toolkit&quot; how to run your app
+</span><span>
+</span><span style="color:#e9fdac;">tsconfig.json </span><span style="color:#6d6d6d;"># typescript configuration
+</span><span>
+</span><span style="color:#e9fdac;">node_modules/ </span><span style="color:#6d6d6d;"># project dependencies
+</span><span>
+</span></code></pre>
+<ul>
+<li>2 directories</li>
+<li>node dependency folder</li>
+<li>a bunch of config files</li>
+</ul>
+<h2 id="a-note-on-the-lingo">A note on the lingo</h2>
+<p>Everything that the init command just created is called a CDK app.</p>
+<p>Inside the app there are “stacks”</p>
+<p>Inside the stacks there are “constructs”</p>
+<h1 id="simple-example">Simple Example</h1>
+<p><code>bin/name.ts</code></p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#6d6d6d;">#!/usr/bin/env node
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">cdk </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span>{ </span><span style="color:#e9fdac;">CdkWorkshopStack </span><span>} </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">../lib/cdk-workshop-stack</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">app </span><span style="color:#ff5e5e;">= new </span><span>cdk.App();
+</span><span style="color:#ff5e5e;">new </span><span>CdkWorkshopStack(</span><span style="color:#e9fdac;">app</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">CdkWorkshopStack</span><span style="color:#ffffff;">&#39;</span><span>);
+</span></code></pre>
+<p>All this does is load and instantiate the <code>name</code> stack.</p>
+<p>Who cares. Moving on.</p>
+<p>Now let’s look at <code>lib/name-stack.ts</code></p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">cdk </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">sns </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-sns</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">subs </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-sns-subscriptions</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">sqs </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-sqs</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span>
+</span><span style="color:#ff5e5e;">export </span><span style="font-style:italic;color:#fbdfb5;">class </span><span>CdkWorkshopStack </span><span style="color:#ff5e5e;">extends </span><span>cdk.</span><span style="text-decoration:underline;font-style:italic;color:#8cdaff;">Stack </span><span>{
+</span><span>  </span><span style="font-style:italic;color:#fbdfb5;">constructor</span><span style="color:#ffffff;">(</span><span style="font-style:italic;color:#fc9354;">scope</span><span style="color:#ff5e5e;">: </span><span>cdk.App, </span><span style="font-style:italic;color:#fc9354;">id</span><span style="color:#ff5e5e;">: </span><span style="color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">props</span><span style="color:#ff5e5e;">?: </span><span>cdk.StackProps</span><span style="color:#ffffff;">) </span><span>{
+</span><span>    </span><span style="color:#d699ff;">super</span><span>(</span><span style="color:#e9fdac;">scope</span><span>, </span><span style="color:#e9fdac;">id</span><span>, </span><span style="color:#e9fdac;">props</span><span>);
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">queue </span><span style="color:#ff5e5e;">= new </span><span>sqs.Queue(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">CdkWorkshopQueue</span><span style="color:#ffffff;">&#39;</span><span>, {
+</span><span>      visibilityTimeout: </span><span style="color:#e9fdac;">cdk</span><span>.</span><span style="color:#e9fdac;">Duration</span><span>.</span><span style="color:#8cdaff;">seconds</span><span>(</span><span style="color:#fdb082;">300</span><span>)
+</span><span>    });
+</span><span>
+</span><span>    </span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">topic </span><span style="color:#ff5e5e;">= new </span><span>sns.Topic(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">CdkWorkshopTopic</span><span style="color:#ffffff;">&#39;</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#e9fdac;">topic</span><span>.</span><span style="color:#8cdaff;">addSubscription</span><span>(</span><span style="color:#ff5e5e;">new </span><span>subs.SqsSubscription(</span><span style="color:#e9fdac;">queue</span><span>));
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>This does three main things:</p>
+<ol>
+<li>Creates an SQS Queue</li>
+<li>SNS Topic</li>
+<li>Subscribes the <code>1</code> to receive any messages published to <code>2</code></li>
+</ol>
+<h2 id="scope-id-and-props"><code>scope</code> , <code>id</code>, and <code>props</code></h2>
+<p><code>scope</code> is always the first argument in which constructs are created. Usually you just pass in <code>this</code>, because you want to define constructs with the current construct.</p>
+<p><code>id</code> is the local identity of the construct, a unique way to refer to it with its scope.</p>
+<p><code>props</code> are initialization properties. The lambda props accepts properties like <code>runtime</code>, <code>code</code>, <code>handler</code> name.</p>
+<h1 id="our-example-creating-an-s3-bucket">Our example: creating an S3 bucket</h1>
+<p>First of all I had to add a couple environment variables:</p>
+<ul>
+<li><code>CDK_DEFAULT_ACCOUNT</code></li>
+<li><code>CDK_DEFAULT_REGION</code></li>
+</ul>
+<p>Then I ran <code>cdk synth</code> to see if everything looked good.</p>
+<p>Then I ran <code>cdk bootstrap</code> which creates a “bootstrap stack” for the app.</p>
+<p>Now I have a bunch of roles, a bucket, etc.</p>
+<p>Finally, I do:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">cdk</span><span> deploy
+</span></code></pre>
+<p>Now lets add some changes:</p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">cdk </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span>{ </span><span style="color:#e9fdac;">Construct </span><span>} </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">constructs</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span>{ </span><span style="color:#e9fdac;">aws_s3 </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">s3 </span><span>} </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;
+</span><span>
+</span><span style="color:#ff5e5e;">export </span><span style="font-style:italic;color:#fbdfb5;">class </span><span>CdkWorkshopStack </span><span style="color:#ff5e5e;">extends </span><span>cdk.</span><span style="text-decoration:underline;font-style:italic;color:#8cdaff;">Stack </span><span>{
+</span><span>  </span><span style="font-style:italic;color:#fbdfb5;">constructor</span><span style="color:#ffffff;">(</span><span style="font-style:italic;color:#fc9354;">scope</span><span style="color:#ff5e5e;">: </span><span>Construct, </span><span style="font-style:italic;color:#fc9354;">id</span><span style="color:#ff5e5e;">: </span><span style="color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">props</span><span style="color:#ff5e5e;">?: </span><span>cdk.StackProps</span><span style="color:#ffffff;">) </span><span>{
+</span><span>    </span><span style="color:#d699ff;">super</span><span>(</span><span style="color:#e9fdac;">scope</span><span>, </span><span style="color:#e9fdac;">id</span><span>, </span><span style="color:#e9fdac;">props</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#ff5e5e;">new </span><span>s3.Bucket(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">MyThirdBucket</span><span style="color:#ffffff;">&#39;</span><span>, {
+</span><span>        versioned: </span><span style="color:#ff8942;">true</span><span>,
+</span><span>        removalPolicy: </span><span style="color:#e9fdac;">cdk</span><span>.</span><span style="color:#e9fdac;">RemovalPolicy</span><span>.</span><span style="color:#e9fdac;">DESTROY</span><span>,
+</span><span>        autoDeleteObjects: </span><span style="color:#ff8942;">true
+</span><span>    });
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>And then run <code>cdk diff</code>:</p>
+<h1 id="what-else-can-you-do">What else can you do?</h1>
+<p>Check the docs: <a href="https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_s3.Bucket.html">class Bucket (construct) · AWS CDK</a></p>
+<h1 id="important-commands">Important Commands</h1>
+<p><code>cdk bootstrap</code></p>
+<ul>
+<li>This installs a “bootstrap stack” of AWS stuff that will be used to create your stack</li>
+<li>This stack includes resources that are used in the toolkit’s operation</li>
+<li>For example, you can store code in an S3 bucket and use that during the deployment process</li>
+</ul>
+<p><code>cdk synth</code> </p>
+<ul>
+<li>generates the cloudformation templates</li>
+</ul>
+<p><code>cdk deploy</code></p>
+<ul>
+<li>actually deploys to <code>aws</code></li>
+</ul>
+<p><code>cdk diff</code></p>
+<ul>
+<li>if you make changes to the <code>cdk</code> this will show you what’s been changes</li>
+</ul>
+<p><code>cdk deploy --hotswap</code></p>
+<ul>
+<li>this will try to update the infrastructure you currently have with any changes you make</li>
+<li>for example if you want to disable versioning for a bucket or change it’s privacy settings</li>
+</ul>
+<p><code>cdk watch</code></p>
+<ul>
+<li>this will watch your code for changes and try to deploy if it can</li>
+<li>but you can only make asset changes</li>
+<li>for example you cannot disable/enable versioning but you can adda picture/data to the contents of the bucket</li>
+</ul>
+<p>note: These commands deliberately introduces drift in CloudFormation stacks in order to speed up deployments.</p>
+<p>Drift is when you cloud formation templates don’t match your actual stack.</p>
+<p><code>cdk destroy</code></p>
+<ul>
+<li>destroys stuff 💀 </li>
+</ul>
+<h1 id="what-is-aws-lambda">What is AWS Lambda</h1>
+<p>AWS Lambda is a serverless, event-driven compute service that lets you run code for virtually any type of application or backend service without provisioning or managing servers. </p>
+<p>What do you need:</p>
+<ul>
+<li>a name</li>
+<li>a trigger</li>
+<li>code (either a script or an executable in a zip)</li>
+<li>a runtime</li>
+<li>(optional) layers</li>
+</ul>
+<h2 id="what-is-a-layer">What is a layer?</h2>
+<p>A layer is a ZIP archive that contains libraries, a custom runtime, or other dependencies. With layers, you can use libraries in your function without needing to include them in your deployment package.</p>
+<h1 id="let-s-use-lambda">Let’s use lambda</h1>
+<p>Adding an AWS lambda function</p>
+<ol>
+<li>create a directory <code>lambda</code> in the root of the CDK app</li>
+<li>add a line to <code>.gitignore</code> to NOT ignore all the <code>.js</code> files in lambda</li>
+</ol>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>!lambda/*
+</span></code></pre>
+<ol start="3">
+<li>add the following js file, <code>lambda/hello.js</code></li>
+</ol>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#fbe3bf;">exports</span><span>.</span><span style="color:#8cdaff;">handler </span><span style="color:#ff5e5e;">= async </span><span style="font-style:italic;color:#fbdfb5;">function</span><span style="color:#ffffff;">(</span><span style="font-style:italic;color:#fc9354;">event</span><span style="color:#ffffff;">) </span><span>{
+</span><span>  </span><span style="color:#fbe3bf;">console</span><span>.</span><span style="color:#6699cc;">log</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">request:</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#ecfdb9;">JSON</span><span>.</span><span style="color:#6699cc;">stringify</span><span>(event, </span><span style="color:#ff8942;">undefined</span><span>, </span><span style="color:#fdb082;">2</span><span>));
+</span><span>  </span><span style="color:#ff5e5e;">return </span><span>{
+</span><span>    statusCode: </span><span style="color:#fdb082;">200</span><span>,
+</span><span>    headers: { </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Content-Type</span><span style="color:#ffffff;">&quot;</span><span>: </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">text/plain</span><span style="color:#ffffff;">&quot; </span><span>},
+</span><span>    body: </span><span style="color:#ffffff;">`</span><span style="color:#fbe3bf;">Hello, CDK! You&#39;ve hit ${event.</span><span style="color:#e9fdac;">path</span><span style="color:#fbe3bf;">}</span><span style="color:#fdb082;">\n</span><span style="color:#ffffff;">`
+</span><span>  };
+</span><span>};
+</span></code></pre>
+<p>This is a lambda function that always returns the text <strong>“Hello, CDK! You’ve hit [url path]”</strong></p>
+<p>To define an AWS Lambda function you need to use the <strong>AWS Construct Library.</strong></p>
+<p>The construct library is divided into modules.</p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">cdk </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">lambda </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-lambda</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span>
+</span><span style="color:#ff5e5e;">export </span><span style="font-style:italic;color:#fbdfb5;">class </span><span>CdkWorkshopStack </span><span style="color:#ff5e5e;">extends </span><span>cdk.</span><span style="text-decoration:underline;font-style:italic;color:#8cdaff;">Stack </span><span>{
+</span><span>  </span><span style="font-style:italic;color:#fbdfb5;">constructor</span><span style="color:#ffffff;">(</span><span style="font-style:italic;color:#fc9354;">scope</span><span style="color:#ff5e5e;">: </span><span>cdk.App, </span><span style="font-style:italic;color:#fc9354;">id</span><span style="color:#ff5e5e;">: </span><span style="color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">props</span><span style="color:#ff5e5e;">?: </span><span>cdk.StackProps</span><span style="color:#ffffff;">) </span><span>{
+</span><span>    </span><span style="color:#d699ff;">super</span><span>(</span><span style="color:#e9fdac;">scope</span><span>, </span><span style="color:#e9fdac;">id</span><span>, </span><span style="color:#e9fdac;">props</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#6d6d6d;">// defines an AWS Lambda resource
+</span><span>    </span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">hello </span><span style="color:#ff5e5e;">= new </span><span>lambda.Function(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">HelloHandler</span><span style="color:#ffffff;">&#39;</span><span>, {
+</span><span>      runtime: </span><span style="color:#e9fdac;">lambda</span><span>.</span><span style="color:#e9fdac;">Runtime</span><span>.</span><span style="color:#e9fdac;">NODEJS_16_X</span><span>,    </span><span style="color:#6d6d6d;">// runtime
+</span><span>      code: </span><span style="color:#e9fdac;">lambda</span><span>.</span><span style="color:#e9fdac;">Code</span><span>.</span><span style="color:#8cdaff;">fromAsset</span><span>(</span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">lambda</span><span style="color:#ffffff;">&#39;</span><span>),  </span><span style="color:#6d6d6d;">// code loaded from our &quot;lambda&quot; directory
+</span><span>      handler: </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">hello.handler</span><span style="color:#ffffff;">&#39;                </span><span style="color:#6d6d6d;">// file is &quot;hello&quot;, function is &quot;handler&quot;
+</span><span>    });
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<h1 id="testing-lambda">Testing Lambda</h1>
+<ul>
+<li>go to test menu</li>
+<li>select an apigateway-aws-proxy test from the drop down</li>
+<li>hit test</li>
+</ul>
+<h1 id="using-cdk-watch">Using CDK watch</h1>
+<p>Note: since it is a typescript project and we are using javascript in the lambda function, we have to update <code>cdk.json</code> to not exclude the files</p>
+<h1 id="adding-rest-trigger">Adding REST trigger</h1>
+<p>To actually interact with a lambda function from outside of the AWS console you have to give it some kind of trigger.</p>
+<p>An obvious example would be, watching for uploads to an S3 bucket.</p>
+<p>What we can also do is expose a rest api call that call the lambda function. </p>
+<p>The most sensible way to do that would be to use API Gateway, an AWS service to expose public HTTP endpoints.</p>
+<pre data-lang="tsx" style="background-color:#191919;color:#f8f8f2;" class="language-tsx "><code class="language-tsx" data-lang="tsx"><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">cdk </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">lambda </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-lambda</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ff8942;">* </span><span style="color:#ff5e5e;">as </span><span style="color:#e9fdac;">apigw </span><span style="color:#ff5e5e;">from </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">aws-cdk-lib/aws-apigateway</span><span style="color:#ffffff;">&#39;</span><span>;
+</span><span>
+</span><span style="color:#ff5e5e;">export </span><span style="font-style:italic;color:#fbdfb5;">class </span><span>CdkWorkshopStack </span><span style="color:#ff5e5e;">extends </span><span>cdk.</span><span style="text-decoration:underline;font-style:italic;color:#8cdaff;">Stack </span><span>{
+</span><span>  </span><span style="font-style:italic;color:#fbdfb5;">constructor</span><span style="color:#ffffff;">(</span><span style="font-style:italic;color:#fc9354;">scope</span><span style="color:#ff5e5e;">: </span><span>cdk.App, </span><span style="font-style:italic;color:#fc9354;">id</span><span style="color:#ff5e5e;">: </span><span style="color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">props</span><span style="color:#ff5e5e;">?: </span><span>cdk.StackProps</span><span style="color:#ffffff;">) </span><span>{
+</span><span>    </span><span style="color:#d699ff;">super</span><span>(</span><span style="color:#e9fdac;">scope</span><span>, </span><span style="color:#e9fdac;">id</span><span>, </span><span style="color:#e9fdac;">props</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#6d6d6d;">// defines an AWS Lambda resource
+</span><span>    </span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">hello </span><span style="color:#ff5e5e;">= new </span><span>lambda.Function(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">HelloHandler</span><span style="color:#ffffff;">&#39;</span><span>, {
+</span><span>      runtime: </span><span style="color:#e9fdac;">lambda</span><span>.</span><span style="color:#e9fdac;">Runtime</span><span>.</span><span style="color:#e9fdac;">NODEJS_14_X</span><span>,    </span><span style="color:#6d6d6d;">// execution environment
+</span><span>      code: </span><span style="color:#e9fdac;">lambda</span><span>.</span><span style="color:#e9fdac;">Code</span><span>.</span><span style="color:#8cdaff;">fromAsset</span><span>(</span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">lambda</span><span style="color:#ffffff;">&#39;</span><span>),  </span><span style="color:#6d6d6d;">// code loaded from &quot;lambda&quot; directory
+</span><span>      handler: </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">hello.handler</span><span style="color:#ffffff;">&#39;                </span><span style="color:#6d6d6d;">// file is &quot;hello&quot;, function is &quot;handler&quot;
+</span><span>    });
+</span><span>
+</span><span>    </span><span style="color:#6d6d6d;">// defines an API Gateway REST API resource backed by our &quot;hello&quot; function.
+</span><span>    </span><span style="color:#ff5e5e;">new </span><span>apigw.LambdaRestApi(</span><span style="color:#d699ff;">this</span><span>, </span><span style="color:#ffffff;">&#39;</span><span style="color:#fbe3bf;">Endpoint</span><span style="color:#ffffff;">&#39;</span><span>, {
+</span><span>      handler: </span><span style="color:#e9fdac;">hello
+</span><span>    });
+</span><span>
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<h1 id="life-lessons">Life Lessons</h1>
+<ul>
+<li>GUIs suck (I always knew this actually)</li>
+<li>“use things the way they are intended to be used” - paraphrasing jim</li>
+</ul>
+<h1 id="questions-thoughts">Questions &amp; Thoughts</h1>
+<h2 id="terraform-vs-cdks">Terraform vs. CDKs</h2>
+<p>Disclaimer: i don’t know what I’m talking about.</p>
+<p>Terraform uses a JSON-like language to define resources and other data, the HCL, or HashiCorp Configuration Language.</p>
+<p>CDKs use code which then generates CloudFormation Templates in Json/yaml.</p>
+<p>Terraform works on a lot of platforms, CDK is AWS specific.</p>
+<p>Terraform is more reusable. You can “reuse” CDK code but you cannot “create your own modules”.</p>
+<h2 id="cuelang-would-be-interesting-for-this-kinda-thing-i-think">Cuelang would be interesting for this kinda thing I THINK</h2>
+<p>Disclaimer: i don’t know what I’m talking about here either. </p>
+<p><a href="https://cuelang.org/">CUE (Configure Unify Execute)</a></p>
+<p>Not a “full” programming language. It’s kinda like Jsonnet.</p>
+<p>CUE is written in Go.</p>
+<blockquote>
+<p>The CUE language has an unusual property which sets it apart from many other languages and formats - types and values are the same. <em>Not the same as only same type of structure, like JSON and JSON Schema,</em> <strong><em>but actually the same</em>.</strong></p>
+</blockquote>
+<p>An aws example I found:</p>
+<p><a href="https://tidycloudaws.com/take-a-cue-to-supercharge-your-configurations/">Take a cue to supercharge your configurations</a></p>
+<p>Can create reusable definitions.</p>
+<h1 id="fun-fact">Fun Fact</h1>
+<p>I went to a golang meetup last week and this guy pronounced <code>fmt</code> as <em>fumpt</em> 😳</p>
+
+
+</div>
+
+
+    </div>
+  </section>
+  
+
+  <footer>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+   
+    <br/> 
+    copyright 2022-2023 <a class="github-link" href="https://github.com/jxlxx">jxlxx</a> 
+ </footer>
+  
+</body>
+</html>
+

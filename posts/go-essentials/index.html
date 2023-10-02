@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>jxlxx.org</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.org/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.org"> jxlxx.org  </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+
+<div class="go-back">
+
+ <a href="https://jxlxx.org"> <span class="emoji">⇦</span>  go back</a>
+
+
+</div>
+
+<h1 class="title">
+  Go Essentials
+</h1>
+<p class="description">
+  A short list of the essential things to know about Go to have a good time.
+<p>
+<p class="subtitle"><strong>2022-09-11</strong></p>
+<h1 id="background">Background</h1>
+<p>Go was designed at Google. 
+It is sometimes called Golang, but its official name is Go. 
+However, if you are looking up any documentation/StackOverflow stuff you will most likely have to say Golang instead of just Go.</p>
+<p>Go is a statically typed, compiled, high-level language designed for concurrency.
+One of the inventors of Go is Ken Thompson, the guy who invented the C programming language.
+Go came about because Thompson and the others’ collective distaste for C++. Here is a quote from the guy:</p>
+<p><strong>KT: Yes. When the three of us [Thompson, Rob Pike, and Robert Griesemer] got started, it was pure research. 
+The three of us got together and decided that we hated C++. [laughter]</strong>
+source: <a href="https://web.archive.org/web/20130105013259/https://www.drdobbs.com/open-source/interview-with-ken-thompson/229502480">interview with KT</a></p>
+<p>This post is intended to be a short reference to give programmers new to Go enough context to hit the ground running. </p>
+<p>Go is actually a very simple language (in a good way) so it's easy to get started if you have
+some experience with any other typed and compiled language. I might even go as far as to say
+that it is the easiest typed and compiled langauge to learn these days 😳</p>
+<p>We will briefly talk about:</p>
+<ol start="0">
+<li><a href="https://julio.lol/posts/go-essentials/#hello-shi-jie">a simple <code>hello, world</code> example</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#packages-and-modules">packages and modules</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#defining-functions-methods-and-variables">functions, methods, variables</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#error-handling">error handling</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#goroutines">goroutines (and <code>defer</code>)</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#channels">channels (and <code>select</code>)</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#waitgroups">waitgroups</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#contexts">contexts</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#interfaces">interfaces</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#project-structure">project structure</a></li>
+<li><a href="https://julio.lol/posts/go-essentials/#other">gofmt (and <code>go.dev/play</code>)</a></li>
+</ol>
+<h1 id="hello-shi-jie">Hello, 世界!</h1>
+<p>First, let's have a quick look at a simple <code>hello world</code> program in Go. 
+You can go to <a href="https://go.dev/play/">https://go.dev/play/</a> to run it yourself.</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Hello, 世界</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  }
+</span><span>	
+</span></code></pre>
+<p>There are 4 details that leap out at us immediately and lead to some natural questions.</p>
+<ol>
+<li>We are looking at a <strong>package</strong> called <code>main</code> <em>(what is a package?)</em></li>
+<li>We are <strong>importing</strong> something called <code>fmt</code> <em>(what is <code>fmt</code>?)</em></li>
+<li>We are <strong>defining</strong> a function called <code>main</code> <em>(is there something special about the name <code>main</code>?)</em></li>
+<li>We are <strong>calling</strong> a function from <code>fmt</code> called <code>Println</code> <em>(why is is capitalized?)</em></li>
+</ol>
+<p>Let's start with answering those 4 burning questions, and then we will get into concurrency and other fancy stuff.</p>
+<h1 id="packages-and-modules">Packages and modules</h1>
+<p>Go projects are composed of <strong>packages</strong>  and <strong>modules</strong>.</p>
+<p>A package is a directory of Go files (<code>*.go</code>) that do something and are somehow related (ideally, but I guess you can do whatever you want).
+All the files in a package contain the line: <code>package package_name</code>. In this case we have a <code>main</code> package,
+probably defined in a file called <code>main.go</code>.</p>
+<blockquote>
+<p>💡 You can search for publicly available packages here: <a href="https://pkg.go.dev/">pkg.go.dev</a> </p>
+</blockquote>
+<p>A <strong>module</strong> is a collection of one or more go packages that is versioned and has dependencies.</p>
+<p>A module is identified by a <strong>module path</strong>, which is the <em>canonical name</em> for the module.
+Module paths usually have two parts to them, the path part and the name part.
+The path part specificies where the module is being imported from, of the module and the <em>name</em> is the just the name of the module.</p>
+<p>For example, the Gin web framework has a module path: <code>github.com/gin-gonic/gin</code>
+The package is called <code>gin</code> and the code repository is hosted at <code>https://github.com/gin-gonic/gin</code>.</p>
+<p>But unless you are writing some open source Go software (in which case you really don't need to be reading this article), you don't have to 
+worry about the path part. Many tutorials tell you to use <code>github.com/&lt;your_username&gt;/&lt;package_name&gt;</code>, but it's not at all necessary when you are just learning
+or working on your own small projects. This is the suggested path because it will prevent path collisions with other peoples packages when you are a wildly successful
+open source dev. </p>
+<p>However, your machine and the Go compiler need to know where you are keeping your go code and your imported packages. 
+This information is stored in the <code>$GOPATH</code> environment variable. You can see all Go related environment variables with <code>go env</code>.</p>
+<p>According the Go website, Go developers <em>usually</em> keep all their Go code/projects in own directory called a <strong>Workspace</strong> (I do not. Ever heard of Nix, you nerds?).</p>
+<p>For example, the workspace of a professional Go developer might look like this:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>.
+</span><span>├── pkg // contains compiled go packages that are
+</span><span>│       // later used to create binary executable in bin
+</span><span>│
+</span><span>├── bin
+</span><span>│   ├── company_app
+</span><span>│   └── personal_project
+</span><span>│
+</span><span>└── src
+</span><span>    ├── github.com/my_company_github/company_app
+</span><span>    │   ├── .git
+</span><span>    │   └── ... go code
+</span><span>    │   
+</span><span>    └── github.com/my_github/personal_project
+</span><span>        ├── .git
+</span><span>        └── ... go code
+</span><span>      
+</span></code></pre>
+<p>And the <code>$GOPATH</code> should be set to that directory. </p>
+<blockquote>
+<p>💡 There is some information on structuring individual Go projects here: <a href="https://julio.lol/posts/go-essentials/#project-structure"># project structure</a></p>
+</blockquote>
+<p>Anyways, back to modules.</p>
+<p>Modules usually must have have a <code>go.mod</code> file, which defines the module path and the modules direct and indirect dependencies.
+(Technically, you don't <em>need</em> to have one, but I cannot think of a good reason why you wouldn't).
+The <code>go.mod</code> file is not meant to be created or edited by humans, although it is intended to be readable. 
+There are lost of commands to work with <code>go.mod</code> files, but the two important ones are <code>go mod init</code> and <code>go mod tidy</code></p>
+<p><code>go mod init</code> creates a module and generates <code>go.mod</code> file in your current repository. 
+You can also optionally specify a module path like this: <code>go mod init some/module/path</code> </p>
+<p><code>go mod tidy</code> will look at the import statements in your code and add new dependencies and remove dependencies that are no longer needed.</p>
+<blockquote>
+<p>💡 Here are some other things you can go with <code>go mod</code>: <a href="https://go.dev/ref/mod">go.dev/ref/mod</a></p>
+</blockquote>
+<p>Modules also usually have a <code>go.sum</code> file, which conatins cryptographic hashes of the modules' direct and indirect dependencies.</p>
+<p>So in the end we have something like:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>.
+</span><span>└── hello-world
+</span><span>   ├── main.go
+</span><span>   ├── go.mod
+</span><span>   └── go.sum
+</span><span>
+</span></code></pre>
+<p>Is the word <code>main</code>, special? Yes, from the <a href="https://go.dev/ref/spec#Program_execution">Go language specification</a>: </p>
+<blockquote>
+<p>A complete program is created by linking a single, unimported package called the main package with all the packages it imports, transitively.
+The main package must have package name main and declare a function main that takes no arguments and returns no value.</p>
+</blockquote>
+<blockquote>
+<p>Program execution begins by initializing the main package and then invoking the function main. When that function invocation returns, 
+the program exits. It does not wait for other (non-main) goroutines to complete.</p>
+</blockquote>
+<h2 id="the-fmt-package">The <code>fmt</code> package</h2>
+<p>The <code>fmt</code> (&quot;format&quot;) package is an I/O package in the Go standard library.</p>
+<p>It defines functions analogous to C's <code>printf</code> and <code>scanf</code>.</p>
+<h1 id="defining-functions-methods-and-variables">Defining functions, methods and variables</h1>
+<p>This is how you define a function in Go:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">hello</span><span>() {
+</span><span>  </span><span style="color:#6d6d6d;">// ... code ...
+</span><span>}
+</span></code></pre>
+<p>This is how you specify arguments:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">hello</span><span>(</span><span style="font-style:italic;color:#fc9354;">name </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">age </span><span style="font-style:italic;color:#fbe3bf;">int</span><span>) {
+</span><span>  </span><span style="color:#6d6d6d;">// ... code ...
+</span><span>}
+</span></code></pre>
+<p>You can also be cool and do this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">hello</span><span>(</span><span style="font-style:italic;color:#fc9354;">first_name</span><span>, </span><span style="font-style:italic;color:#fc9354;">last_name </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fc9354;">age </span><span style="font-style:italic;color:#fbe3bf;">int</span><span>) {
+</span><span>  </span><span style="color:#6d6d6d;">// ... code ...
+</span><span>}
+</span></code></pre>
+<p>This is how specify return types:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">hello</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">string </span><span>{
+</span><span>  </span><span style="color:#6d6d6d;">// ... code ...
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// for multiple values, you need braces
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">hello_maybe</span><span>() (</span><span style="font-style:italic;color:#fbe3bf;">string</span><span>, </span><span style="font-style:italic;color:#fbe3bf;">error</span><span>) {
+</span><span>  </span><span style="color:#6d6d6d;">// ... code ...
+</span><span>}
+</span></code></pre>
+<p>There are two ways to define methods:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">struct </span><span style="color:#e9fdac;">Server </span><span>{
+</span><span>  </span><span style="color:#6d6d6d;">// ... fields
+</span><span>}
+</span><span>
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">s </span><span style="font-style:italic;color:#fbdfb5;">Server</span><span>) </span><span style="color:#8cdaff;">hello_value_reciever</span><span>() {
+</span><span>   </span><span style="color:#6d6d6d;">// doing some stuff 
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">s </span><span style="color:#ff5e5e;">*</span><span style="font-style:italic;color:#fbdfb5;">Server</span><span>) </span><span style="color:#8cdaff;">hello_pointer_reciever</span><span>() {
+</span><span>  </span><span style="color:#6d6d6d;">// doing some stuff and maybe changing things in s
+</span><span>}
+</span></code></pre>
+<p>The reason you would you use <code>(s *Server)</code>, AKA a <strong>pointer reciever</strong>, is that it will allow you to make changes to the
+caller, whereas you cannot change anything inside the caller if you are using a <strong>value reciever</strong>.</p>
+<h2 id="public-and-private-functions">Public and private functions</h2>
+<p>Exposed values from other modules have to start with a capital. For example:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ff5e5e;">...</span><span>) </span><span style="color:#6d6d6d;">// this is perfectly fine :)
+</span><span>
+</span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">padString</span><span>(</span><span style="color:#ff5e5e;">...</span><span>) </span><span style="color:#6d6d6d;">// not allowed, that&#39;s for `fmt` to know about, not you
+</span></code></pre>
+<p>This is also true for structs:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="font-style:italic;color:#fbdfb5;">type </span><span>Server </span><span style="font-style:italic;color:#fbdfb5;">struct </span><span>{
+</span><span>  </span><span style="color:#e9fdac;">secret </span><span style="font-style:italic;color:#fbe3bf;">string
+</span><span>  </span><span style="color:#e9fdac;">NonSecret </span><span style="font-style:italic;color:#fbe3bf;">string  
+</span><span>}
+</span><span>
+</span></code></pre>
+<h2 id="variables-and-underscores">Variables and underscores</h2>
+<p>There are two ways to declare variables. Explicitly saying the type or not saying the type and letting the compiler figure it out.</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">var </span><span style="color:#e9fdac;">x </span><span style="font-style:italic;color:#fbe3bf;">int </span><span style="color:#6d6d6d;">// explicit
+</span><span style="color:#e9fdac;">x </span><span style="color:#ff5e5e;">:= </span><span style="color:#fdb082;">1    </span><span style="color:#6d6d6d;">// implicit
+</span></code></pre>
+<p>The <code>:=</code> means that the variable is being declared, aka set for the first time. When you are reassigning the value you do not use the colon.</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">y </span><span style="color:#ff5e5e;">:= </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">something</span><span style="color:#ffffff;">&quot;
+</span><span style="color:#e9fdac;">y </span><span style="color:#ff5e5e;">= </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">another thing</span><span style="color:#ffffff;">&quot;
+</span></code></pre>
+<p>If you have unused variables or imports, Go will complain and the build will fail. 
+But while developing you can get around this by using underscores. </p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#6d6d6d;">// don&#39;t use the colon, because nothing is being declared.
+</span><span style="color:#e9fdac;">_ </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">some_function</span><span>()
+</span><span>
+</span><span style="color:#6d6d6d;">// Or, if you want one of the returned values
+</span><span style="color:#e9fdac;">_</span><span>, </span><span style="color:#e9fdac;">used_var </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">another_function</span><span>()
+</span></code></pre>
+<p>Also, you can use this technique to silence the unused imports error:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#ff5e5e;">import </span><span style="color:#e9fdac;">_ </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot; </span><span style="color:#6d6d6d;">// i&#39;ll use this later
+</span></code></pre>
+<p>You can also rename the packages:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#ff5e5e;">import </span><span style="color:#e9fdac;">api </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">https://github.com/jxlxx/superlongpackagename</span><span style="color:#ffffff;">&quot;
+</span><span style="color:#ff5e5e;">import </span><span style="color:#e9fdac;">other_api </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">https://github.com/jxlxx/superlongpackagename2</span><span style="color:#ffffff;">&quot;
+</span></code></pre>
+<p>And also, you only need to say <code>import</code> once:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#ff5e5e;">import </span><span>(
+</span><span>    </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">time</span><span style="color:#ffffff;">&quot;
+</span><span>    </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>    </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">context</span><span style="color:#ffffff;">&quot;
+</span><span>    )
+</span></code></pre>
+<h1 id="error-handling">Error Handling</h1>
+<p>Typically in Go, you will see a pattern with errors over and over again.</p>
+<p>Functions return: </p>
+<ul>
+<li>the value you want </li>
+<li>and maybe an error</li>
+</ul>
+<p>By <em>maybe</em> I mean it will either return <code>nil</code> or an <code>error</code>.</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#e9fdac;">SomeFunction </span><span>(</span><span style="color:#e9fdac;">yourstring </span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">string</span><span>, </span><span style="color:#e9fdac;">error</span><span>) {
+</span><span>  </span><span style="color:#ff5e5e;">if </span><span>(</span><span style="color:#e9fdac;">yourstring </span><span style="color:#ff5e5e;">== </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">good string</span><span style="color:#ffffff;">&quot;</span><span>) {
+</span><span>    </span><span style="color:#ff5e5e;">return </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">thanks, that&#39;s a good string</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#ff8942;">nil	
+</span><span>  } 
+</span><span>  </span><span style="color:#6d6d6d;">// bad string
+</span><span>  </span><span style="color:#ff5e5e;">return </span><span style="color:#ffffff;">&quot;&quot;</span><span>, </span><span style="color:#e9fdac;">errors</span><span>.</span><span style="color:#e9fdac;">New</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">No thanks, bad string</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>Then, when you call a function you can either ignore the error 
+(perhaps you know that the default value is fine) or handle it in some way:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#e9fdac;">response</span><span>, </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">SomeFunction</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">good string</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>
+</span><span style="color:#ff5e5e;">if </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">!= </span><span style="color:#ff8942;">nil </span><span>{
+</span><span>  </span><span style="color:#6d6d6d;">// here you will usually do something in response to the error and the
+</span><span>  </span><span style="color:#6d6d6d;">// function will return early
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">an error!!!</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">return
+</span><span>}
+</span><span style="color:#6d6d6d;">// here you know that err == nil, so you can proceed with response
+</span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">response</span><span>)
+</span><span>
+</span></code></pre>
+<p>This has a tendency to make your functions really long, but that's okay.</p>
+<h1 id="goroutines">Goroutines</h1>
+<p>If you are using Go, you probably want to make use of concurrency. 
+You can do this using goroutines, channels, and some other primitives that make life better. </p>
+<p>A <strong>goroutine</strong> is a thread managed by the Go runtime. </p>
+<p>This is how you call a goroutine with no name:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">go </span><span style="font-style:italic;color:#fbdfb5;">func</span><span>() {
+</span><span>  </span><span style="color:#6d6d6d;">// do stuff
+</span><span>}()
+</span><span>
+</span></code></pre>
+<p>And this is how you call a goroutine with a name:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">time</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="color:#e9fdac;">sleep_and_print</span><span>(</span><span style="color:#fdb082;">5</span><span>, </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">this is called first but printed last</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="color:#e9fdac;">sleep_and_print</span><span>(</span><span style="color:#fdb082;">1</span><span>, </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">this is called last but printed first</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Sleep</span><span>(</span><span style="color:#fdb082;">10000</span><span>)
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">sleep_and_print</span><span>(</span><span style="font-style:italic;color:#fc9354;">x </span><span style="font-style:italic;color:#fbe3bf;">int</span><span>, </span><span style="font-style:italic;color:#fc9354;">y </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>) {
+</span><span>  </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Sleep</span><span>(</span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Duration</span><span>(</span><span style="color:#e9fdac;">x </span><span style="color:#ff5e5e;">* </span><span style="color:#fdb082;">1000</span><span>))
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">y</span><span>)
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>Isn't that nice?</p>
+<p>In the above code we had to call <code>time.Sleep(10000)</code> at the end of main because 
+after the goroutines are called the main function keeps executing and exits without 
+checking on whether the goroutines terminated or not. </p>
+<p>Since go routines are managed by the go runtime, they are terminated when they return 
+or when the program it’s self exits (<code>main</code> in this case). </p>
+<p>Obviously, a sleep function is a terrible way to ensure 
+that our functions get executed. To communicate across goroutines we can make use of 
+<strong>channels</strong> and <strong>waitgroups</strong>.</p>
+<p>Is it possible for goroutines to leak? Yes.</p>
+<p>There are many techniques to monitor for goroutine leaks, but I wouldn’t say that they are 
+essential to get started with Go. 
+<a href="https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/#:~:text=pprof%20basics&amp;text=The%20normal%20way%20to%20use,pprof%20to%20analyze%20said%20profile">But here is something you can read, if you wish.</a></p>
+<h2 id="defer">Defer</h2>
+<p>Before getting into channels, etc. I want to mention a very lovely keyword <code>defer</code>. The <code>defer</code> keyword is 
+placed before a function call and it “defers” the executing of the function until right before the function that it is being called in, returns. </p>
+<p>All the deferred functions will get executed in the reverse order that they were deferred. 
+So if I defer function A and then defer function B, then right before the function returns, 
+B will be executed and then A will be executed.</p>
+<p>First Deferred, Last Executed. </p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#ff5e5e;">defer </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">A - deferred first</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">defer </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">B - deferred second</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">C - first</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">D - second</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// Output: 
+</span><span style="color:#6d6d6d;">// C - first
+</span><span style="color:#6d6d6d;">// D - second
+</span><span style="color:#6d6d6d;">// B - deferred second
+</span><span style="color:#6d6d6d;">// A - deferred first
+</span><span>
+</span></code></pre>
+<p><code>defer</code> is very useful when using channels as well, which we will get into soon.</p>
+<h1 id="channels">Channels</h1>
+<p>A <strong>channel</strong> is a place to send and receive values in a way that is accessible to multiple goroutines.</p>
+<p>You can have two kinds of channels: <strong>buffered</strong> and <strong>unbuffered</strong>.</p>
+<p>An <strong>unbuffered channel</strong> means that you do not set a size limit when creating it, and it can grow freely.</p>
+<p>A <strong>buffered channel</strong> means that you give it a limit on how large in can grow when you declare it. </p>
+<p>This is how you create both kinds of channels: </p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">unbuffered_channel </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>
+</span><span style="color:#e9fdac;">buffered_channel </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>, </span><span style="color:#fdb082;">2</span><span>)
+</span><span>
+</span><span style="color:#e9fdac;">message_channel </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan Message</span><span>) </span><span style="color:#6d6d6d;">// perhaps I have a Message struct
+</span></code></pre>
+<p>This is how you read and write from channels:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>, </span><span style="color:#fdb082;">1</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot;                </span><span style="color:#6d6d6d;">// adding a message to the channel
+</span><span>  </span><span style="color:#e9fdac;">recieved_message</span><span>, </span><span style="color:#e9fdac;">ok </span><span style="color:#ff5e5e;">:= &lt;-</span><span style="color:#e9fdac;">messages </span><span style="color:#6d6d6d;">// receiving a message from a channel
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">if </span><span style="color:#e9fdac;">ok </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">recieved_message</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>You can close channels like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#6699cc;">close</span><span>(</span><span style="color:#e9fdac;">messages</span><span>)
+</span></code></pre>
+<p>However, you do not always have to close channels. They are not like files. You close channels as a 
+way to say to the goroutines using them that there are no more values that are going to be sent to 
+the channel. </p>
+<blockquote>
+<p>💡 Link: <a href="https://go101.org/article/channel-closing.html">How to Gracefully Close Channels</a></p>
+</blockquote>
+<p>Buffered channels are also called <strong>asynchronous channels</strong>.</p>
+<p>And unbuffered channels are also called <strong>synchronous channels</strong>.</p>
+<p>Why? Well suppose  we made messages an unbuffered channel in the previous example, like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot;                </span><span style="color:#6d6d6d;">// adding a message to the channel
+</span><span>  </span><span style="color:#e9fdac;">recieved_message</span><span>, </span><span style="color:#e9fdac;">ok </span><span style="color:#ff5e5e;">:= &lt;-</span><span style="color:#e9fdac;">messages </span><span style="color:#6d6d6d;">// receiving a message from a channel
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">if </span><span style="color:#e9fdac;">ok </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">recieved_message</span><span>)
+</span><span>  }
+</span><span>  
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// fatal error: all goroutines are asleep - deadlock!
+</span><span>
+</span></code></pre>
+<p>If we ran this code we would get a fatal runtime error. This is due to the line:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot; 
+</span></code></pre>
+<p>This line will block the execution of the rest of the code. </p>
+<p>Receivers (<code>im_a_reciever&lt;-</code>) always block and wait until there is data to recieve.</p>
+<p>Once the receiver begins recieving data, the sender blocks (<code>&lt;-im_a_sender</code>):</p>
+<ul>
+<li>If the channel is unbuffered, the sender blocks <strong>until a receiver has read from the channel</strong>.</li>
+<li>If the channel is buffered, it will only wait <strong>until the value is copied to the buffer</strong>. If the buffer is full, it must wait until
+a reciever has read from the channel and &quot;freed up some space&quot; for more data.</li>
+</ul>
+<p>This is why buffered channels are considered <em>asynchronous</em>, because they facilitate asynchonous communication among goroutines, since the
+goroutines don't need to consider if someone is reading what they are saying. They just go about their business.</p>
+<p>If we wanted to make the channel unbuffered, we could do something like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="font-style:italic;color:#fbdfb5;">func</span><span>() {
+</span><span>    </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot;
+</span><span>    </span><span style="color:#6699cc;">close</span><span>(</span><span style="color:#e9fdac;">messages</span><span>)
+</span><span>  }()
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">for </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">:= range </span><span style="color:#e9fdac;">messages </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">i</span><span>)
+</span><span>  }
+</span><span>
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>We start a goroutine that begins the message <code>&quot;hello&quot;</code> to our channel. Since the channel is unbuffered, it is blocked until someone reads from the channel.</p>
+<p>At &quot;the same time&quot;, we start a for loop the is looking at <code>messages</code>. It will keep trying to read from the <code>messages</code> channel, until it is closed.</p>
+<p>Once the goroutine writes <code>&quot;hello&quot;</code> to <code>messages</code>, the for loop proceeds to give us <code>i</code>, which is the value in the channel, <code>&quot;hello&quot;</code> and we can print it with <code>fmt</code>.</p>
+<p>Now that <code>&quot;hello&quot;</code> was read, the goroutine can proceed to the next step of executing, closing the channel, which which also terminal the for loop and thus terminate <code>main</code> successfully.</p>
+<p>Here is an example where we don't close the channel, but it doesn't crash the program:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">add_message_to_channel</span><span>(</span><span style="font-style:italic;color:#fc9354;">messages </span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>) {
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">woo hoo recursion</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">add_message_to_channel</span><span>(</span><span style="color:#e9fdac;">messages</span><span>)
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="color:#e9fdac;">add_message_to_channel</span><span>(</span><span style="color:#e9fdac;">messages</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ff5e5e;">&lt;-</span><span style="color:#e9fdac;">messages</span><span>)
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>Because the blocking is happening in a goroutine and not in <code>main</code>, the Go runtime doesn't care if the goroutine is 
+doing something and will just kill it once main is done. In theory, Go will clean up for you, but this is ugly. 
+Perhaps don't do stuff like this.</p>
+<p>You could use <code>defer</code> to close channels once a function is done with them:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">add_message_to_channel</span><span>(</span><span style="font-style:italic;color:#fc9354;">messages </span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>) {
+</span><span>  </span><span style="color:#ff5e5e;">defer </span><span style="color:#6699cc;">close</span><span>(</span><span style="color:#e9fdac;">messages</span><span>) </span><span style="color:#6d6d6d;">// once we read one message from messages (causing the 
+</span><span>                        </span><span style="color:#6d6d6d;">// function to close and return) we will never be able
+</span><span>                        </span><span style="color:#6d6d6d;">// to read from it again
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">hello</span><span style="color:#ffffff;">&quot;
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#e9fdac;">messages </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="color:#e9fdac;">add_message_to_channel</span><span>(</span><span style="color:#e9fdac;">messages</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">for </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">:= range </span><span style="color:#e9fdac;">messages </span><span>{    
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">i</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span></code></pre>
+<h2 id="select"><strong><code>select</code></strong></h2>
+<p>A critical keyword for working with channels is the <code>select</code> keyword.</p>
+<p>The <code>select</code> keyword is like a special switch case for channels which allows you to look at multiple 
+channels at once and act of the first one to receive a value. </p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#6d6d6d;">// original: https://gobyexample.com/select
+</span><span style="color:#6d6d6d;">// but I modified a bit
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">time</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">c1 </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">c2 </span><span style="color:#ff5e5e;">:= </span><span style="color:#6699cc;">make</span><span>(</span><span style="font-style:italic;color:#fbdfb5;">chan </span><span style="font-style:italic;color:#fbe3bf;">string</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="font-style:italic;color:#fbdfb5;">func</span><span>() {
+</span><span>    </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Sleep</span><span>(</span><span style="color:#fdb082;">2 </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Second</span><span>)
+</span><span>    </span><span style="color:#e9fdac;">c1 </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">send this after 2 seconds</span><span style="color:#ffffff;">&quot;
+</span><span>  }()
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">go </span><span style="font-style:italic;color:#fbdfb5;">func</span><span>() {
+</span><span>    </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Sleep</span><span>(</span><span style="color:#fdb082;">1 </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Second</span><span>)
+</span><span>    </span><span style="color:#e9fdac;">c2 </span><span style="color:#ff5e5e;">&lt;- </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">send this after 1 second</span><span style="color:#ffffff;">&quot;
+</span><span>  }()
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">for </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">:= </span><span style="color:#fdb082;">0</span><span>; </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">&lt; </span><span style="color:#fdb082;">2</span><span>; </span><span style="color:#e9fdac;">i</span><span style="color:#ff5e5e;">++ </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">select </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">case </span><span style="color:#e9fdac;">msg1 </span><span style="color:#ff5e5e;">:= &lt;-</span><span style="color:#e9fdac;">c1</span><span>:
+</span><span>      </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">case 1:</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">msg1</span><span>)
+</span><span>    </span><span style="color:#ff5e5e;">case </span><span style="color:#e9fdac;">msg2 </span><span style="color:#ff5e5e;">:= &lt;-</span><span style="color:#e9fdac;">c2</span><span>:
+</span><span>      </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">case 2:</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">msg2</span><span>)
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// Output:
+</span><span style="color:#6d6d6d;">// case 2: send this after 1 second
+</span><span style="color:#6d6d6d;">// case 1: send this after 2 seconds
+</span><span>
+</span></code></pre>
+<h1 id="waitgroups">WaitGroups</h1>
+<p>A <code>WaitGroup</code> is a really simple idea but really powerful. It allows you to safely control the 
+behaviour of your goroutines in a really clean way.</p>
+<p>A <code>WaitGroup</code> is really just a fancy counter that allows you to stop you code from 
+executing at a certain point until that counter reaches 0. </p>
+<p>You instantiate a counter like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">var </span><span style="color:#e9fdac;">wg sync</span><span>.</span><span style="font-style:italic;color:#fbdfb5;">WaitGroup
+</span></code></pre>
+<p>Add to it like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Add</span><span>(</span><span style="color:#fdb082;">1</span><span>)
+</span></code></pre>
+<p>Decrement like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Done</span><span>()
+</span></code></pre>
+<p>and wait like this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Wait</span><span>()
+</span></code></pre>
+<p>Usually, WaitGroups are used combination with defer and goroutines to wait until all the goroutines
+have finished executing. For example:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#6d6d6d;">// source: https://gobyexample.com/waitgroups
+</span><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">sync</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">time</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">worker</span><span>(</span><span style="font-style:italic;color:#fc9354;">id </span><span style="font-style:italic;color:#fbe3bf;">int</span><span>) {
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Printf</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Worker </span><span style="color:#fdb082;">%d</span><span style="color:#fbe3bf;"> starting</span><span style="color:#fdb082;">\n</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">id</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Sleep</span><span>(</span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Second</span><span>)
+</span><span>  </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Printf</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Worker </span><span style="color:#fdb082;">%d</span><span style="color:#fbe3bf;"> done</span><span style="color:#fdb082;">\n</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">id</span><span>)
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>
+</span><span>  </span><span style="font-style:italic;color:#fbdfb5;">var </span><span style="color:#e9fdac;">wg sync</span><span>.</span><span style="font-style:italic;color:#fbdfb5;">WaitGroup
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">for </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">:= </span><span style="color:#fdb082;">1</span><span>; </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">&lt;= </span><span style="color:#fdb082;">5</span><span>; </span><span style="color:#e9fdac;">i</span><span style="color:#ff5e5e;">++ </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Add</span><span>(</span><span style="color:#fdb082;">1</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#e9fdac;">i </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">i
+</span><span>
+</span><span>    </span><span style="color:#ff5e5e;">go </span><span style="font-style:italic;color:#fbdfb5;">func</span><span>() {
+</span><span>     </span><span style="color:#ff5e5e;">defer </span><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Done</span><span>()
+</span><span>     </span><span style="color:#e9fdac;">worker</span><span>(</span><span style="color:#e9fdac;">i</span><span>)
+</span><span>    }()
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#e9fdac;">wg</span><span>.</span><span style="color:#e9fdac;">Wait</span><span>()
+</span><span>
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// Output: 
+</span><span style="color:#6d6d6d;">// (Note that the order may change each time you run the program)
+</span><span style="color:#6d6d6d;">// Worker 5 starting
+</span><span style="color:#6d6d6d;">// Worker 2 starting
+</span><span style="color:#6d6d6d;">// Worker 1 starting
+</span><span style="color:#6d6d6d;">// Worker 3 starting
+</span><span style="color:#6d6d6d;">// Worker 4 starting
+</span><span style="color:#6d6d6d;">// Worker 1 done
+</span><span style="color:#6d6d6d;">// Worker 3 done
+</span><span style="color:#6d6d6d;">// Worker 2 done
+</span><span style="color:#6d6d6d;">// Worker 5 done
+</span><span style="color:#6d6d6d;">// Worker 4 done
+</span><span>
+</span></code></pre>
+<blockquote>
+<p>💡 Note that when you are passing a waitgroup you must do it by reference, 
+otherwise a new WaitGroup will be created if you try to pass by value and 
+there is no point of doing that!!</p>
+</blockquote>
+<h1 id="contexts">Contexts</h1>
+<p><strong>Contexts</strong> are another way to synchronise the behaviours of your goroutines. </p>
+<p>With contexts you can:</p>
+<ol>
+<li>Add a time out, which signals to all the goroutines which have access to the context to wrap things up</li>
+<li>Or just manually signal to all goroutines to wrap things up by cancelling the context</li>
+</ol>
+<blockquote>
+<p>💡 Note that you need to check if the context has actually expired or been cancelled, otherwise nothing happens.</p>
+</blockquote>
+<p>There are a few ways to to create a context: </p>
+<ol>
+<li>With a deadline (a timestamp at which point the context will expire), </li>
+<li>a timeout (a duration, which once elapsed after initialisation will cancel the context), </li>
+<li>or a context with a cancel function which if used will allow you to cancel the context manually when every you want. </li>
+<li>Or, none of these things (maybe you just need a dummy context for the moment)</li>
+</ol>
+<blockquote>
+<p>💡 <a href="https://pkg.go.dev/context#example-WithValue">You can also pass values to contexts</a>.</p>
+</blockquote>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#6d6d6d;">// source: https://pkg.go.dev/context#example-WithTimeout
+</span><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">context</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>  </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">time</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">const </span><span style="color:#e9fdac;">shortDuration </span><span style="color:#ff5e5e;">= </span><span style="color:#fdb082;">1 </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Millisecond
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>  </span><span style="color:#6d6d6d;">// Pass a context with a timeout to tell a blocking function that it
+</span><span>  </span><span style="color:#6d6d6d;">// should abandon its work after the timeout elapses.
+</span><span>  </span><span style="color:#e9fdac;">ctx</span><span>, </span><span style="color:#e9fdac;">cancel </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">context</span><span>.</span><span style="color:#e9fdac;">WithTimeout</span><span>(</span><span style="color:#e9fdac;">context</span><span>.</span><span style="color:#e9fdac;">Background</span><span>(), </span><span style="color:#e9fdac;">shortDuration</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">defer </span><span style="color:#e9fdac;">cancel</span><span>()
+</span><span>
+</span><span>  </span><span style="color:#ff5e5e;">select </span><span>{
+</span><span>  </span><span style="color:#ff5e5e;">case &lt;-</span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">After</span><span>(</span><span style="color:#fdb082;">1 </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">time</span><span>.</span><span style="color:#e9fdac;">Second</span><span>):
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">overslept</span><span style="color:#ffffff;">&quot;</span><span>)
+</span><span>  </span><span style="color:#ff5e5e;">case &lt;-</span><span style="color:#e9fdac;">ctx</span><span>.</span><span style="color:#e9fdac;">Done</span><span>():
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">ctx</span><span>.</span><span style="color:#e9fdac;">Err</span><span>()) </span><span style="color:#6d6d6d;">// prints &quot;context deadline exceeded&quot;
+</span><span>  }
+</span><span>
+</span><span>}
+</span><span>
+</span><span style="color:#6d6d6d;">// Output:
+</span><span style="color:#6d6d6d;">// context deadline exceeded
+</span><span>
+</span></code></pre>
+<h1 id="interfaces">Interfaces</h1>
+<blockquote>
+<p>Accept Interfaces, Return Structs - Jim</p>
+</blockquote>
+<p>Interfaces in go are essential.</p>
+<p>An <strong>interface</strong> is a collection of method signatures.</p>
+<p>If a type has implemented every method in an interface, than it is said to “<em>implement the interface</em>”.</p>
+<p>Typically, you want interfaces to be small. You want them to be <em>easy</em> to implement.</p>
+<p>The reason you might want to use an interface is that you want to use different types as
+arguments to a function. </p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#6d6d6d;">// source: https://gobyexample.com/interfaces
+</span><span>
+</span><span style="color:#ff5e5e;">package </span><span style="color:#e9fdac;">main
+</span><span>
+</span><span style="color:#ff5e5e;">import </span><span>(
+</span><span>    </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>    </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">math</span><span style="color:#ffffff;">&quot;
+</span><span>)
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">type </span><span>geometry </span><span style="font-style:italic;color:#fbdfb5;">interface </span><span>{
+</span><span>    </span><span style="color:#8cdaff;">area</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64
+</span><span>    </span><span style="color:#8cdaff;">perim</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">type </span><span>rect </span><span style="font-style:italic;color:#fbdfb5;">struct </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">width</span><span>, </span><span style="color:#e9fdac;">height </span><span style="font-style:italic;color:#fbe3bf;">float64
+</span><span>}
+</span><span style="font-style:italic;color:#fbdfb5;">type </span><span>circle </span><span style="font-style:italic;color:#fbdfb5;">struct </span><span>{
+</span><span>    </span><span style="color:#e9fdac;">radius </span><span style="font-style:italic;color:#fbe3bf;">float64
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">r </span><span style="font-style:italic;color:#fbdfb5;">rect</span><span>) </span><span style="color:#8cdaff;">area</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64 </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">return </span><span style="color:#e9fdac;">r</span><span>.</span><span style="color:#e9fdac;">width </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">r</span><span>.</span><span style="color:#e9fdac;">height
+</span><span>}
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">r </span><span style="font-style:italic;color:#fbdfb5;">rect</span><span>) </span><span style="color:#8cdaff;">perim</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64 </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">return </span><span style="color:#fdb082;">2</span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">r</span><span>.</span><span style="color:#e9fdac;">width </span><span style="color:#ff5e5e;">+ </span><span style="color:#fdb082;">2</span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">r</span><span>.</span><span style="color:#e9fdac;">height
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">c </span><span style="font-style:italic;color:#fbdfb5;">circle</span><span>) </span><span style="color:#8cdaff;">area</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64 </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">return </span><span style="color:#e9fdac;">math</span><span>.</span><span style="color:#e9fdac;">Pi </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">c</span><span>.</span><span style="color:#e9fdac;">radius </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">c</span><span>.</span><span style="color:#e9fdac;">radius
+</span><span>}
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span>(</span><span style="font-style:italic;color:#fc9354;">c </span><span style="font-style:italic;color:#fbdfb5;">circle</span><span>) </span><span style="color:#8cdaff;">perim</span><span>() </span><span style="font-style:italic;color:#fbe3bf;">float64 </span><span>{
+</span><span>    </span><span style="color:#ff5e5e;">return </span><span style="color:#fdb082;">2 </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">math</span><span>.</span><span style="color:#e9fdac;">Pi </span><span style="color:#ff5e5e;">* </span><span style="color:#e9fdac;">c</span><span>.</span><span style="color:#e9fdac;">radius
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">measure</span><span>(</span><span style="font-style:italic;color:#fc9354;">g </span><span style="font-style:italic;color:#fbdfb5;">geometry</span><span>) {
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">g</span><span>)
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">g</span><span>.</span><span style="color:#e9fdac;">area</span><span>())
+</span><span>    </span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Println</span><span>(</span><span style="color:#e9fdac;">g</span><span>.</span><span style="color:#e9fdac;">perim</span><span>())
+</span><span>}
+</span><span>
+</span><span style="font-style:italic;color:#fbdfb5;">func </span><span style="color:#8cdaff;">main</span><span>() {
+</span><span>    </span><span style="color:#e9fdac;">r </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">rect</span><span>{</span><span style="color:#e9fdac;">width</span><span>: </span><span style="color:#fdb082;">3</span><span>, </span><span style="color:#e9fdac;">height</span><span>: </span><span style="color:#fdb082;">4</span><span>}
+</span><span>    </span><span style="color:#e9fdac;">c </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">circle</span><span>{</span><span style="color:#e9fdac;">radius</span><span>: </span><span style="color:#fdb082;">5</span><span>}
+</span><span>
+</span><span>    </span><span style="color:#e9fdac;">measure</span><span>(</span><span style="color:#e9fdac;">r</span><span>)
+</span><span>    </span><span style="color:#e9fdac;">measure</span><span>(</span><span style="color:#e9fdac;">c</span><span>)
+</span><span>}
+</span><span>
+</span></code></pre>
+<h2 id="interfaces-for-testing">Interfaces for testing</h2>
+<p>Interfaces also make unit testing a lot easier.</p>
+<p>For example, maybe I will have an interface call <code>DatabaseClient</code> like so:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="font-style:italic;color:#fbdfb5;">interface </span><span style="color:#e9fdac;">DatabaseClient </span><span>{
+</span><span>	</span><span style="color:#e9fdac;">ReadFromDB</span><span>(</span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">string</span><span>, </span><span style="color:#e9fdac;">error</span><span>)
+</span><span>	</span><span style="color:#e9fdac;">WriteToDb</span><span>(</span><span style="color:#e9fdac;">string</span><span>, </span><span style="color:#e9fdac;">string</span><span>) </span><span style="color:#e9fdac;">error
+</span><span>}
+</span></code></pre>
+<p>And then I can create two types which both implement the interface: <code>RealDBClient</code>and <code>MockDBClient</code>.</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span>(</span><span style="color:#e9fdac;">s </span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">RealDBClient</span><span>) </span><span style="color:#e9fdac;">ReadFromDB</span><span>(</span><span style="color:#e9fdac;">str </span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">string</span><span>, </span><span style="color:#e9fdac;">error</span><span>) {
+</span><span>	</span><span style="color:#6d6d6d;">// ...
+</span><span>}
+</span><span>
+</span><span>(</span><span style="color:#e9fdac;">s </span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">RealDBClient</span><span>) </span><span style="color:#e9fdac;">WriteToDb</span><span>(</span><span style="color:#e9fdac;">str</span><span>, </span><span style="color:#e9fdac;">str2 </span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">error</span><span>) {
+</span><span>	</span><span style="color:#6d6d6d;">// ...
+</span><span>}
+</span><span>
+</span><span>(</span><span style="color:#e9fdac;">s </span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">MockDBClient</span><span>) </span><span style="color:#e9fdac;">ReadFromDB</span><span>(</span><span style="color:#e9fdac;">str </span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">string</span><span>, </span><span style="color:#e9fdac;">error</span><span>) {
+</span><span>	</span><span style="color:#6d6d6d;">// ...
+</span><span>}
+</span><span>
+</span><span>(</span><span style="color:#e9fdac;">s </span><span style="color:#ff5e5e;">*</span><span style="color:#e9fdac;">MockDBClient</span><span>) </span><span style="color:#e9fdac;">WriteToDb</span><span>(</span><span style="color:#e9fdac;">str</span><span>, </span><span style="color:#e9fdac;">str2 </span><span style="color:#fbe3bf;">string</span><span>) (</span><span style="color:#e9fdac;">error</span><span>) {
+</span><span>	</span><span style="color:#6d6d6d;">// ...
+</span><span>}
+</span></code></pre>
+<p>Now I can thoroughly and reliably test my database client implementation.</p>
+<h1 id="project-structure">Project Structure</h1>
+<p>Go projects have modules and packages.</p>
+<p>This is the basic structure for a Go web app.</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>.
+</span><span>└── app-name
+</span><span>    │
+</span><span>    ├─── go.mod
+</span><span>    ├─── go.sum
+</span><span>    │
+</span><span>    ├── main.go
+</span><span>    │
+</span><span>    └─── packages
+</span><span>      ├── package-1
+</span><span>      │   ├── handlers.go
+</span><span>      │   └── handlers_test.go
+</span><span>      └── package-2
+</span><span>          ├── handlers.go
+</span><span>          └── handlers_test.go
+</span><span>
+</span></code></pre>
+<p>app-name, whatever it is, is a module. </p>
+<p>Typically you would have all your server code in <code>main.go</code>, and everything else in <code>/packages</code>.</p>
+<p>Another really common pattern is to use a <code>/cmd</code> directory of all the 'external' stuff. And <code>/internal</code> all your helper functions/business logic etc.</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>.
+</span><span>└── app-name
+</span><span>    │
+</span><span>    ├─── go.mod
+</span><span>    ├─── go.sum
+</span><span>    │
+</span><span>    ├─── cmd
+</span><span>    │   └── main.go
+</span><span>    │
+</span><span>    └─── internal
+</span><span>      ├── package-1
+</span><span>      │   ├── handlers.go
+</span><span>      │   └── handlers_test.go
+</span><span>      └── package-2
+</span><span>          ├── handlers.go
+</span><span>          └── handlers_test.go
+</span><span>
+</span></code></pre>
+<p>It's okay to have files that are a thousand lines plus. Have you seen the error handling? c'mon.</p>
+<h1 id="other">Other</h1>
+<h2 id="go-fmt"><strong><code>go fmt</code></strong></h2>
+<p>Go has a formatting tool that is very helpful.</p>
+<p>In your directory containing your Go code, you can run <code>gofmt</code> to see what the formatter would like to change.</p>
+<p><code>gofmt -s</code> will also “simplify” your code</p>
+<p><code>gofmt -w</code> will actually write the changes to file instead of just <code>stdout</code>.</p>
+<p><code>gofmt -d</code> will display a diff to <code>stdout</code>.</p>
+<h2 id="go-playground">Go Playground</h2>
+<p>Another thing I recommend is using: <a href="https://go.dev/play/">https://go.dev/play/</a></p>
+<p>It is a web service that will compile and run Go code, which is convenient when testing small things. 
+And it is very easy to share code with it, so I have found it to be really useful testing and debugging alone and with other people.</p>
+<h1 id="references">References</h1>
+<ul>
+<li>go routines (<a href="https://gobyexample.com/goroutines">gobyexample.com/goroutines</a>)</li>
+<li>channels (<a href="https://www.ardanlabs.com/blog/2017/10/the-behavior-of-channels.html">Arden Labs - The behavior of channels</a>)</li>
+<li>waitgroups (<a href="https://gobyexample.com/waitgroups">gobyexample.com/waitgroups</a>)</li>
+<li><code>defer</code> (<a href="https://gobyexample.com/defer">gobyexample.com/defer</a>)</li>
+<li><code>context</code> (<a href="https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html">Ardan Labs - Context package semantics in go</a>)</li>
+<li>best practices and smarter explainations (<a href="https://go.dev/doc/effective_go">Effective Go</a>)
+<ul>
+<li>this doc has been froxen since January 2022, but I still like it</li>
+</ul>
+</li>
+<li><a href="https://go.dev/ref/spec">Go language spec</a>
+<ul>
+<li>very nice reading</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+
+
+    </div>
+  </section>
+  
+
+  <footer>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+   
+    <br/> 
+    copyright 2022-2023 <a class="github-link" href="https://github.com/jxlxx">jxlxx</a> 
+ </footer>
+  
+</body>
+</html>
+

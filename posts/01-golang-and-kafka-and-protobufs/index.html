@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter&display=swap" rel="stylesheet">
+  <title>jxlxx.org</title>
+  <link id="stylesheet" 
+        rel="stylesheet" 
+        type="text/css" 
+        href="https://jxlxx.org/base.css">
+</head>
+    
+<body>
+  <script>
+  
+  const cls = document.body.classList;
+  
+  (function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if(theme == "dark") {
+      cls.toggle("dark", true);
+      cls.toggle("light", false);
+    } else {
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    }
+  })();
+  
+  
+  window.addEventListener("load", (evt) => {
+    document.getElementById("dark-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "light");
+      cls.toggle("dark", false);
+      cls.toggle("light", true);
+    });
+    document.getElementById("light-mode").addEventListener("click", function(e) {
+      localStorage.setItem("theme", "dark");
+      cls.toggle("light", false)
+      cls.toggle("dark", true)
+    });
+  })
+  
+  
+  </script>
+  <div class="header">
+    <h1 class="title">
+      <span class="hash"> # </span>
+      <a href="https://jxlxx.org"> jxlxx.org  </a>
+      <span id="dark-mode"  class="theme-toggle">🌝</span>
+      <span id="light-mode" class="theme-toggle">🌚</span>
+    </h1>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      
+
+<div class="go-back">
+
+ <a href="https://jxlxx.org"> <span class="emoji">⇦</span>  go back</a>
+
+
+</div>
+
+<h1 class="title">
+  How to use Protobuf with Golang &amp; Kafka
+</h1>
+<p class="description">
+  A quickstart on publishing protocol buffers in Kafka messages. 
+<p>
+<p class="subtitle"><strong>2022-04-06</strong></p>
+<h1 id="tldr">TLDR;</h1>
+<ul>
+<li>Download <code>protoc</code> and <code>protogen-go</code></li>
+<li>Create a <code>.proto</code> file with a structure definition, this is called defining a message type</li>
+<li>Use the protoc compiler to generate a <code>*.pb.go</code> file (which is the golang source code that contains all your functionality related to your message type)</li>
+<li>Instances of a message type are called messages: <code>msg := pb.ExampleType{}</code></li>
+<li>Set data like this: <code>msg := pb.ExampleType{FieldName : &lt;data&gt;}</code></li>
+<li>Add/update data like this: <code>msg.FieldName = &lt;data&gt;</code></li>
+<li>Debug printing is done with: <code>proto.Message(&amp;msg)</code></li>
+<li>Serialize your message: <code>proto.Marshal(&amp;msg)</code></li>
+<li>Publish to Kafka topic: <code>Kafka.Message{… Value: serialized_message ….})</code></li>
+<li>Kafka subscriber receives this Kafka message, deserializes the data via: <code>proto.Unmarshal(kafkaMessage.Value, &amp;msg))</code></li>
+<li>Access fields like this: <code>&amp;msg.GetFieldName()</code></li>
+<li>bingo bongo that's it</li>
+</ul>
+<blockquote>
+<p>💡 Note that I'm using <a href="https://github.com/confluentinc/confluent-kafka-go">Confluent's implementation of a Golang client</a> for Kafka if it matters!! </p>
+</blockquote>
+<h1 id="about-protobuf">About protobuf</h1>
+<ul>
+<li>Protocol Buffers are a mechanism for serializing structured data.</li>
+<li>Protobuf is short for protocol buffers</li>
+<li>Protobufs are like XML but way smaller.</li>
+<li>They are extensible, when you start using them it's really easy to maintain backwards compatibility as you change things.</li>
+<li>You can use protobuf instead of sending JSON between microservices, or when you want to send structured data in your Kafka messages. It's a bit of a time investment initially, but it's worth it for typed messages.</li>
+</ul>
+<h2 id="probably-unnecessary-but-interesting-details">Probably unnecessary but interesting details</h2>
+<ul>
+<li>Protobufs are an example of an IDL, an Interface Definition Language.</li>
+<li>IDLs are a way for two programs written in different languages to communicate with each other.</li>
+<li>What's the <a href="https://stackoverflow.com/questions/19437133/difference-between-api-and-idl">difference between IDL and API</a>? An IDL is a language that can describe APIs, in a platform independent way.</li>
+<li><a href="https://en.wikipedia.org/wiki/Apache_Avro">Avro</a> is an IDL that uses JSON if that's more your jam.</li>
+<li>Protobufs were started in Google and are used in Google's internal communication between services. </li>
+<li>Google uses an RPC infrastructure called Stubby to connect their zillions of servers. Stubby is google specific, but <a href="https://grpc.io/">gRPC</a> is a generalized open-source RPC framework based on Stubby (and uses protobuf as default). If you see RPC/gRPC pop up a lot while researching protobufs, this is why.</li>
+<li>RPCs are much beyond the scope of this doc, but basically a way for machines to communicate with one another and execute procedures, and the calling and execution of procedures doesn't have to be in the same address space (a call one one machine can be executed on another machine in the same network). Great for highly distributed systems.</li>
+<li>Protobufs aren't compressed by default, but you can compress them with zip, gzip etc.</li>
+<li>Sometimes compression is sub-optimal for data in the form of JPEGs and PNGs, where JPEG/PNG compression will do a better job.</li>
+<li>When protobuf messages are serialized, the same data can have different binary representations, so you can't check for equality on serialized data.</li>
+<li>Marshalling is similar or synonymous to serialization, although there may be a slight difference between the two depending on the language or framework. </li>
+</ul>
+<h1 id="protoc-setup">Protoc Setup</h1>
+<p>Go isn't actually one of the languages the protobuf compiler (protoc) supports by default, so you have to download a Go plugin, called <code>protogen-go</code>. There are two versions available, the <code>github.com</code> one is depreciated, so use the <code>google.com</code> one. We'll talk about this more later.</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">go</span><span> install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+</span></code></pre>
+<h1 id="downloading-protoc">Downloading protoc</h1>
+<p>Go to this web page:<code> https://github.com/protocolbuffers/protobuf/releases/</code> and look at the list of latest releases. Download the compressed file that applies to you. I am using Go and Ubuntu, so I downloaded <code>protoc-3.19.4-linux-x86_64.zip</code>, since as of now, <code>3.18.4</code> is the latest version.</p>
+<p>Once you download it, unzip into a directory called protoc (that's what the -d flag is doing). But this is just for you, you can put this anywhere and name it anything.</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">unzip</span><span style="font-style:italic;color:#fc9354;"> -d</span><span> protoc/ protoc-3.19.4-linux-x86_64.zip
+</span></code></pre>
+<p>After unzipping, your protoc directory should look like this:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">.
+</span><span style="color:#e9fdac;">├──</span><span> bin
+</span><span style="color:#e9fdac;">│</span><span>   └── protoc
+</span><span style="color:#e9fdac;">├──</span><span> include
+</span><span style="color:#e9fdac;">│</span><span>   └── google
+</span><span style="color:#e9fdac;">│</span><span>       └── protobuf
+</span><span style="color:#e9fdac;">│</span><span>           ├── .....
+</span><span style="color:#e9fdac;">└──</span><span> readme.txt
+</span></code></pre>
+<p>As advised by the <code>readme.txt</code>, copy the content of the include directory to <code>/usr/local/include</code> and the protoc binary to somewhere like <code>/usr/bin</code>.</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">sudo</span><span> cp</span><span style="font-style:italic;color:#fc9354;"> -r</span><span> include/google /usr/local/include
+</span><span style="color:#e9fdac;">sudo</span><span> cp bin/protoc /usr/bin
+</span></code></pre>
+<p>The compiler, <code>protoc</code>, takes a <code>*.proto</code> file with protocol buffer definition in it and then generates the source code that you use with your applications code. I had a lot of problems with setting up <code>protoc</code>, all path related and really annoying and boring. So I instead did a quick hack, to get up and running quickly.</p>
+<p><strong>If you have protoc working, skip the next section.</strong></p>
+<h1 id="resolving-my-protoc-issues-in-kind-of-a-gross-way">Resolving my protoc issues in kind of a gross way</h1>
+<p>I tried a slew of things, but I continued to have issues with <code>protoc</code> and paths to things. Since I have better things to do, I did this just to get up and running quickly. I have since changed things on my machine which maybe means I don't have to go this route anymore, but honestly who cares. This way I never have to care about my paths and all my <code>*.proto</code> files are together, and it's easy to move them where they need to be.</p>
+<ul>
+<li>I created a directory (<code>/protobuf-generator</code>) where all my other Go repos live (I don't use <code>~/go</code> because I like making life harder for myself) </li>
+<li>and to that I added <code>/github.com</code> (from <code>github.com/protocolbuffers/protobuf</code>, just for the example directory from the official tutorial),</li>
+<li>then I added <code>/google</code> (from <code>google.golang.org/protobuf/protec-gen-go</code>, the actual plugin),</li>
+<li>and finally <code>protoc</code>, which is the compiler's executable binary.</li>
+</ul>
+<p>Here's what all that looks like:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">.
+</span><span style="color:#e9fdac;">├──</span><span> go-application
+</span><span style="color:#e9fdac;">│</span><span>   ├── go.mod
+</span><span style="color:#e9fdac;">│</span><span>   ├── go.sum
+</span><span style="color:#e9fdac;">│</span><span>   ├── main.go
+</span><span style="color:#e9fdac;">│</span><span>   └── proto-definitions
+</span><span style="color:#e9fdac;">│</span><span>       └── example.pb.go
+</span><span style="color:#e9fdac;">└──</span><span> protobuf-generator
+</span><span>    </span><span style="color:#e9fdac;">├──</span><span> example.pb.go
+</span><span>    </span><span style="color:#e9fdac;">├──</span><span> example.proto
+</span><span>    </span><span style="color:#e9fdac;">├──</span><span> github.com
+</span><span>    </span><span style="color:#e9fdac;">│</span><span>   └── ......
+</span><span>    </span><span style="color:#e9fdac;">├──</span><span> google
+</span><span>    </span><span style="color:#e9fdac;">│</span><span>   └── protobuf
+</span><span>    </span><span style="color:#e9fdac;">│</span><span>       ├── ....
+</span><span>    </span><span style="color:#e9fdac;">└──</span><span> protoc
+</span></code></pre>
+<p>So I create my protobuf generated classes directly in <code>protobuf-generator</code>, and then slap them into <code>go-application/proto-definitions</code>. I actually wrote a little bash script to make feel cleaner and to somewhat automate it. I called it something like <code>run_protoc.sh</code>, and it contains:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#ff5e5e;">if </span><span style="color:#e9fdac;">protoc</span><span style="font-style:italic;color:#fc9354;"> -I</span><span> ./</span><span style="font-style:italic;color:#fc9354;"> --go_out</span><span style="color:#ff5e5e;">=</span><span>./ ./example.proto</span><span style="color:#ff5e5e;">; then
+</span><span>	</span><span style="color:#e9fdac;">cp</span><span> example.pb.go ../go-application/proto-definitions
+</span><span>	</span><span style="color:#e9fdac;">cp</span><span> example.proto ../go-application/proto-definitions </span><span style="color:#6d6d6d;"># so that .proto is in your app&#39;s repo
+</span><span>	</span><span style="color:#6699cc;">echo </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Protobufs Updated!</span><span style="color:#ffffff;">&quot;
+</span><span style="color:#ff5e5e;">else
+</span><span>    </span><span style="color:#6699cc;">echo </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">Oopsie</span><span style="color:#ffffff;">&quot;
+</span><span style="color:#ff5e5e;">fi
+</span></code></pre>
+<p>To run it, <code>chmod</code> it (so it's executable) and then run like a regular script.</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">chmod</span><span> a+x run_protoc.sh  </span><span style="color:#6d6d6d;"># do this once
+</span><span style="color:#e9fdac;">./run_protoc.sh   </span><span style="color:#6d6d6d;"># do this whenever you update example.proto
+</span></code></pre>
+<p>And then for example, to reference the message definitions in <code>main.go</code> I have:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#ff5e5e;">import </span><span>(
+</span><span>	</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">fmt</span><span style="color:#ffffff;">&quot;
+</span><span>	.
+</span><span>	.
+</span><span>	.
+</span><span>        </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">github.com/confluentinc/confluent-kafka-go/kafka</span><span style="color:#ffffff;">&quot;
+</span><span>        </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">google.golang.org/protobuf/proto</span><span style="color:#ffffff;">&quot;
+</span><span>        </span><span style="color:#e9fdac;">pb </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">github.com/mygithub/go-application/proto-definitions</span><span style="color:#ffffff;">&quot;
+</span><span>    )
+</span></code></pre>
+<p>Also <code>package</code> in <code>example.proto</code> should be set to whatever <code>proto-definitions</code> is actually called. And don't make <code>proto-definitons</code> a module.</p>
+<p>And these are <strong>not</strong> the names I use!! Using something as generic as <code>/proto-definitons</code> is super frowned upon in Go, so choose something more specific and descriptive (like the name of your most relevant message definition).</p>
+<p>To clarify  -- because this is a mess --  these are what the paths look like:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>~/go/src/github.com/mygithub/go-application/proto-definitions
+</span><span>~/go/src/github.com/mygithub/protobuf-generator
+</span></code></pre>
+<p>And don't forget to double check your Go environment variables are correct and exist (don't ask me why I didn't just have this in my <code>.zshrc</code>, I don't have an answer. But they are in there now).</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#ff5e5e;">export </span><span style="color:#e9fdac;">GOROOT</span><span style="color:#ff5e5e;">=</span><span style="color:#fbe3bf;">/usr/local/go
+</span><span style="color:#ff5e5e;">export </span><span style="color:#e9fdac;">GOPATH</span><span style="color:#ff5e5e;">=</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">HOME</span><span style="color:#fbe3bf;">/</span><span style="color:#ff5e5e;">&lt;</span><span>go-project-dir</span><span style="color:#ff5e5e;">&gt;
+</span><span style="color:#ff5e5e;">export </span><span style="color:#e9fdac;">GOBIN</span><span style="color:#ff5e5e;">=</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">GOPATH</span><span style="color:#fbe3bf;">/bin
+</span><span style="color:#ff5e5e;">export </span><span style="color:#e9fdac;">PATH</span><span style="color:#ff5e5e;">=</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">PATH</span><span style="color:#fbe3bf;">:</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">GOROOT</span><span style="color:#fbe3bf;">:</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">GOPATH</span><span style="color:#fbe3bf;">:</span><span style="color:#ffffff;">$</span><span style="color:#e9fdac;">GOBIN
+</span></code></pre>
+<p>If you check <code>$GOBIN</code>, you should have the binary of the <code>protoc-gen-go</code> plugin.
+So with all this you can generate protobuf classes and use types in your message definitions provided by protobuf, like <code>timestamp</code> (<code>&quot;google/protobuf/timestamp.proto&quot;</code>). And use the <code>example/tutorial</code> from the official protobuf/Go tutorial.</p>
+<h1 id="generating-protobufs-files-pb-go">Generating protobufs files (*.pb.go)</h1>
+<p>Creating <code>*.proto files</code> is easy and fun. The tutorial is really clear on this front. Here's an example from the official Go/protobuf tutorial, with all the essentials:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>syntax = &quot;proto3&quot;;
+</span><span>package tutorial;
+</span><span>import &quot;google/protobuf/timestamp.proto&quot;;
+</span><span>option go_package = &quot;./&quot;;
+</span><span>message Person {
+</span><span>  string name = 1;
+</span><span>  int32 id = 2;  // Unique ID number for this person.
+</span><span>  string email = 3;
+</span><span>  enum PhoneType {
+</span><span>    MOBILE = 0;
+</span><span>    HOME = 1;
+</span><span>    WORK = 2;
+</span><span>  }
+</span><span>  message PhoneNumber {
+</span><span>    string number = 1;
+</span><span>    PhoneType type = 2;
+</span><span>  }
+</span><span>  repeated PhoneNumber phones = 4;
+</span><span>  google.protobuf.Timestamp last_updated = 5;
+</span><span>}
+</span><span>// Our address book file is just one of these.
+</span><span>message AddressBook {
+</span><span>  repeated Person people = 1;
+</span><span>}
+</span></code></pre>
+<p><code>option go_package</code> is where the generated class of (<code>&lt;example&gt;.pb.go</code>) will be output.
+<code>package</code> will be the name of the folder where the <code>&lt;example&gt;.pb.go</code> file will live. If you are following what I've been doing it's <code>proto-definitions</code>. </p>
+<p>So now to compile:</p>
+<pre data-lang="bash" style="background-color:#191919;color:#f8f8f2;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#e9fdac;">protoc</span><span style="font-style:italic;color:#fc9354;"> -I</span><span> ./</span><span style="font-style:italic;color:#fc9354;"> --go_out</span><span style="color:#ff5e5e;">=</span><span>./ ./example.proto
+</span></code></pre>
+<ul>
+<li><code>-I</code> is the source directory</li>
+<li><code>--go_out</code> is telling <code>protoc</code> you want go code, the directory where it should go</li>
+</ul>
+<p>For the most part it's really easy, but I have not needed to do anything complex with them yet. For general information on defining message types see: https://developers.google.com/protocol-buffers/docs/gotutorial</p>
+<blockquote>
+<p>💡 <strong>for real, look at this:</strong> <a href="https://developers.google.com/protocol-buffers/docs/gotutorial">developers.google.com/protocol-buffers</a> It's explained really well.</p>
+</blockquote>
+<p>And you're all done with setup, now you have your protobuf class ready and you can begin using protobufs within your project!</p>
+<h1 id="programming-with-protobufs">Programming with protobufs</h1>
+<h2 id="fields">Fields</h2>
+<p>You name your fields in <code>snake_case</code> and <code>protoc</code> will convert them to <code>CamelCase</code>. (This is what the style guide says to do).</p>
+<p>For example: <code>my_field</code> becomes <code>MyField</code></p>
+<p>Also note that: <code>_my_Field</code> becomes <code>XMyField</code></p>
+<p>Nested messages are like the following:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>message Foo {
+</span><span>		message Bar {}
+</span><span>}
+</span><span>// defines two structs: Foo, Foo_Bar
+</span></code></pre>
+<p>OneOf is pretty neat:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>message Profile {
+</span><span>		oneof avatar {
+</span><span>				string image_url = 1;
+</span><span>				bytes image_data = 2;
+</span><span>		}
+</span><span>}
+</span></code></pre>
+<p>Dynamic length arrays:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>message Example {
+</span><span>		repeated int32 lot_of_numbers = 1;
+</span><span>}
+</span></code></pre>
+<h2 id="enums-defining-and-setting">Enums (defining and setting)</h2>
+<p>Defined like this:</p>
+<pre style="background-color:#191919;color:#f8f8f2;"><code><span>message Convo {
+</span><span>	enum GreetingType {
+</span><span>	      HI = 0;
+</span><span>	      HELLO = 1;
+</span><span>	      HEY = 2;
+</span><span>	}
+</span><span>	Greeting my_greeting = 1; // this setting the tag, not the value
+</span><span>}
+</span></code></pre>
+<p>The have to have one at 0, because 0 is the default and everything must have a default value. It also has to be first.</p>
+<p>Suppose you get some input/data from somewhere with &quot;HELLO&quot; in it, and that's what you want to set your enum field to, you can go this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">data </span><span style="color:#ff5e5e;">:= </span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">HELLO</span><span style="color:#ffffff;">&quot;
+</span><span style="color:#e9fdac;">msg </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">Convo</span><span>{}
+</span><span style="color:#e9fdac;">msg</span><span>.</span><span style="color:#e9fdac;">MyGreeting </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">Convo_GreetingType</span><span>(</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">convo_GreetingType_value</span><span>[</span><span style="color:#e9fdac;">data</span><span>])
+</span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Printf</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">I said: </span><span style="color:#fdb082;">%s\n</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">msg</span><span>.</span><span style="color:#e9fdac;">GetMyGreeting</span><span>())
+</span><span style="color:#6d6d6d;">// output: I said: HELLO
+</span></code></pre>
+<h2 id="printing-messages">Printing messages</h2>
+<p>If you want to see everything that's in your message then do this:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Printf</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fbe3bf;">My Message:  </span><span style="color:#fdb082;">%s\n</span><span style="color:#ffffff;">&quot;</span><span>,  </span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Message</span><span>(</span><span style="color:#e9fdac;">msg</span><span>)) 
+</span><span style="color:#6d6d6d;">// output: My Message: MyGreeting:HELLO
+</span></code></pre>
+<h2 id="serializing-messages">Serializing Messages</h2>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">msg </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">ExampleType</span><span>{}
+</span><span style="color:#6d6d6d;">// .... do some things with msg
+</span><span style="color:#e9fdac;">buff</span><span>, </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Marshal</span><span>(</span><span style="color:#e9fdac;">msg</span><span>)
+</span></code></pre>
+<h2 id="deserializing-messages">Deserializing Messages</h2>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">serialized_data </span><span style="color:#ff5e5e;">:= </span><span style="color:#6d6d6d;">// ..... 
+</span><span style="color:#e9fdac;">msg </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">ExampleType</span><span>{}
+</span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Unmarshal</span><span>(</span><span style="color:#e9fdac;">serialized_data</span><span>, </span><span style="color:#e9fdac;">msg</span><span>)
+</span></code></pre>
+<h2 id="protobufs-in-kafka-messages">Protobufs in Kafka messages</h2>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#6d6d6d;">// .................... 
+</span><span style="color:#6d6d6d;">// Subscriber
+</span><span style="color:#e9fdac;">kafka_msg</span><span>, </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">:= </span><span style="color:#e9fdac;">consumer</span><span>.</span><span style="color:#e9fdac;">ReadMessage</span><span>()
+</span><span style="color:#e9fdac;">my_example </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">ExampleType</span><span>{}
+</span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Unmarshal</span><span>(</span><span style="color:#e9fdac;">msg</span><span>.</span><span style="color:#e9fdac;">Value</span><span>, </span><span style="color:#e9fdac;">my_example</span><span>)
+</span><span style="color:#e9fdac;">fmt</span><span>.</span><span style="color:#e9fdac;">Printf</span><span>(</span><span style="color:#ffffff;">&quot;</span><span style="color:#fdb082;">\n%s\n</span><span style="color:#ffffff;">&quot;</span><span>, </span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Message</span><span>(</span><span style="color:#e9fdac;">my_example</span><span>))
+</span><span style="color:#6d6d6d;">// Publisher
+</span><span style="color:#e9fdac;">another_example </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">ExampleType</span><span>{}
+</span><span style="color:#6d6d6d;">// do stuff with another_example
+</span><span style="color:#e9fdac;">buff</span><span>, </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Marshal</span><span>(</span><span style="color:#e9fdac;">another_example</span><span>)
+</span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">producer</span><span>.</span><span style="color:#e9fdac;">Produce</span><span>(</span><span style="color:#ff5e5e;">&amp;</span><span style="color:#e9fdac;">kafka</span><span>.</span><span style="color:#e9fdac;">Message</span><span>{ </span><span style="color:#e9fdac;">TopicPartition</span><span>: </span><span style="color:#e9fdac;">my_partition</span><span>,
+</span><span>                                            </span><span style="color:#e9fdac;">Value</span><span>: </span><span style="color:#e9fdac;">buff</span><span>},
+</span><span>                                            </span><span style="color:#e9fdac;">my_delivery_chan</span><span>)
+</span><span style="color:#6d6d6d;">// .....................
+</span></code></pre>
+<h1 id="protobuf-on-the-frontend">Protobuf on the frontend</h1>
+<p>I haven't done this yet, and it may be a while before I do. I am rewriting the backend of an app and I am going to use the corresponding frontend which expects JSON. This is actually maybe not a great idea to be honest because according to the <code>protojson</code> documentation, the conversion from <code>proto.Message</code> to <code>JSON</code> via <code>protojson.Marshal</code> is not stable, and it recommends to not rely on it. But anyhoo this is what I do:</p>
+<pre data-lang="go" style="background-color:#191919;color:#f8f8f2;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#e9fdac;">msg </span><span style="color:#ff5e5e;">:=  </span><span style="color:#6d6d6d;">// serialized Kafka message, it contains message with ExampleType structure
+</span><span>
+</span><span style="color:#e9fdac;">example </span><span style="color:#ff5e5e;">:= &amp;</span><span style="color:#e9fdac;">pb</span><span>.</span><span style="color:#e9fdac;">ExampleType</span><span>{} 
+</span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">proto</span><span>.</span><span style="color:#e9fdac;">Unmarshal</span><span>(</span><span style="color:#e9fdac;">msg</span><span>.</span><span style="color:#e9fdac;">Value</span><span>, </span><span style="color:#e9fdac;">example</span><span>) </span><span style="color:#6d6d6d;">// deserialize my Kafka message
+</span><span>
+</span><span style="color:#6d6d6d;">// check for errors or something
+</span><span style="color:#e9fdac;">json_message</span><span>, </span><span style="color:#e9fdac;">err </span><span style="color:#ff5e5e;">= </span><span style="color:#e9fdac;">protojson</span><span>.</span><span style="color:#e9fdac;">Marshal</span><span>(</span><span style="color:#e9fdac;">req</span><span>) </span><span style="color:#6d6d6d;">// convert to json in a byte array
+</span><span>
+</span><span style="color:#6d6d6d;">// send json_message, which is of type []byte,  an array of bytes
+</span></code></pre>
+<p>I think this a good resource if you would like to send back protobuf messages instead: https://techblog.livongo.com/how-to-use-grpc-and-protobuf-with-javascript-and-reactjs/</p>
+<h1 id="protobuf-and-databases">Protobuf and databases</h1>
+<p>This looks pretty cool if you want to use GORM (a popular Golang ORM) to store protobuf structures in a DB: https://github.com/infobloxopen/protoc-gen-gorm</p>
+
+
+</div>
+
+
+    </div>
+  </section>
+  
+
+  <footer>
+    <a class="link" 
+       href="https://jxlxx.org/about">
+    about</a>
+    <a class="link" 
+       href="https://jxlxx.org/projects">
+    projects</a>
+    <a class="link" 
+       href="https://jxlxx.org/posts">
+    posts</a>
+    <a class="link" 
+       href="https://jxlxx.org/contact">
+    contact</a>
+   
+    <br/> 
+    copyright 2022-2023 <a class="github-link" href="https://github.com/jxlxx">jxlxx</a> 
+ </footer>
+  
+</body>
+</html>
+
